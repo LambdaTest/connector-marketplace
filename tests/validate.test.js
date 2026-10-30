@@ -173,3 +173,20 @@ test('secret scan flags credentials without echoing them', () => {
 
   for (const f of listingFiles()) assert.deepEqual(scanFile(f), [], f);
 });
+
+test('secret scan finds access keys in comments and shell snippets', () => {
+  const file = path.join(tmp, 'leaky-comment.yaml');
+  const key = ['LT', 'aB3dE5fG7hJ9kL1mN3pQ5rS7tU9vW1xY3zA5'].join('_');
+  fs.writeFileSync(file, [
+    'id: leaky-comment',
+    `# setup: LT_ACCESS_KEY=${key}`,
+    '  command: run --token abcdefghij0123456789xyz',
+    'install:',
+    '  env:',
+    '    - name: LT_ACCESS_KEY',
+    '      secret: true',
+    '      description: Your access key from the account settings page.',
+  ].join('\n'));
+  const hits = scanFile(file);
+  assert.deepEqual(hits.map((h) => [h.line, h.rule]), [[2, 'TestMu AI access key']]);
+});

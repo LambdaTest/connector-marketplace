@@ -10,6 +10,7 @@ const { ROOT } = require('./lib/taxonomy');
 
 const RULES = [
   ['Private key', /-----BEGIN (?:RSA |EC |DSA |OPENSSH |PGP )?PRIVATE KEY-----/],
+  ['TestMu AI access key', /\bLT_[A-Za-z0-9]{30,}\b/],
   ['AWS access key id', /\b(?:AKIA|ASIA)[0-9A-Z]{16}\b/],
   ['GitHub token', /\b(?:ghp|gho|ghu|ghs|ghr)_[A-Za-z0-9]{36,}\b|\bgithub_pat_[A-Za-z0-9_]{50,}\b/],
   ['Slack token', /\bxox[abposr]-[A-Za-z0-9-]{10,}\b/],
@@ -21,6 +22,8 @@ const RULES = [
   ['Password in URL', /\b[a-z][a-z0-9+.-]*:\/\/[^\s:/@]+:[^\s/@]+@/i],
   ['Credential in URL query', /[?&](?:api[_-]?key|access[_-]?key|token|secret|password|auth|sig)=[^&\s"']{8,}/i],
   ['Hard-coded secret value', /^\s*(?:value|password|secret|token|api[_-]?key|access[_-]?key)\s*:\s*["']?[A-Za-z0-9_\-+/=]{16,}["']?\s*$/im],
+  // NAME=value or NAME: value anywhere on a line, including comments and shell snippets.
+  ['Secret in a variable', /\b[A-Za-z0-9_]*(?:ACCESS_KEY|API_KEY|SECRET|TOKEN|PASSWORD)[A-Za-z0-9_]*\s*[=:]\s*["']?[A-Za-z0-9_\-+/=]{16,}/i],
 ];
 
 function scanFile(file) {
