@@ -26,8 +26,22 @@ body { background: var(--bg); color: var(--fg); font: 15px/1.55 var(--f-body); }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
 /* Hero: spans the full page width; its content lines up with the column below. */
 .hero { background: var(--surface); border-bottom: 1px solid var(--line); }
-.hero-inner { max-width: 1180px; margin: 0 auto; padding: 56px 20px 44px; display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 24px; }
-.brand { max-width: 720px; }
+.hero-inner { max-width: 1180px; margin: 0 auto; padding: 56px 20px 48px; display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(300px, 1fr); gap: 40px; align-items: center; }
+.brand { min-width: 0; }
+.stats { display: flex; flex-wrap: wrap; gap: 12px 36px; margin: 26px 0 0; padding: 0; }
+.stats div { display: grid; gap: 2px; }
+.stats dt { order: 2; font-size: 13px; color: var(--muted); }
+.stats dd { order: 1; margin: 0; font: 600 30px/1 var(--f-display); letter-spacing: -.03em; font-variant-numeric: tabular-nums; }
+/* Right side of the hero: the call to action for developers. */
+.build-card { background: var(--bg); border: 1px solid var(--line); border-radius: var(--radius); padding: 24px; display: grid; gap: 14px; }
+.build-card .eyebrow { font: 600 12px var(--f-mono); text-transform: uppercase; letter-spacing: .07em; color: var(--accent); margin: 0; }
+.build-card h2 { font: 600 24px/1.15 var(--f-display); letter-spacing: -.02em; margin: 0; }
+.build-card ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.build-card li { display: grid; grid-template-columns: 26px 1fr; gap: 10px; font-size: 14px; color: var(--muted); }
+.build-card li b { display: block; color: var(--fg); font-weight: 600; }
+.build-card .n { width: 26px; height: 26px; border-radius: 50%; background: var(--surface); border: 1px solid var(--line-strong); font: 600 12px/24px var(--f-mono); text-align: center; color: var(--fg); }
+.build-card .note { font-size: 13px; color: var(--muted); margin: 0; }
+.build-card .actions { display: flex; flex-wrap: wrap; gap: 8px; }
 .brand h1 { font: 600 clamp(32px, 5.2vw, 56px)/1.04 var(--f-display); letter-spacing: -.035em; margin: 0; text-wrap: balance; }
 .brand p { margin: 14px 0 0; color: var(--muted); font-size: 17px; line-height: 1.55; max-width: 62ch; }
 .btn { font: 600 14px/1 var(--f-body); border-radius: var(--radius-sm); padding: 11px 16px; border: 1px solid var(--line); background: var(--surface); color: var(--fg); cursor: pointer; text-decoration: none; display: inline-flex; gap: 8px; align-items: center; }
@@ -137,7 +151,9 @@ body { background: var(--bg); color: var(--fg); font: 15px/1.55 var(--f-body); }
 .dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; flex: none; }
 
 @media (max-width: 640px) {
-  .hero-inner { padding: 36px 20px 28px; }
+  .hero-inner { padding: 36px 20px 28px; grid-template-columns: minmax(0, 1fr); gap: 28px; }
+  .stats { gap: 10px 24px; }
+  .stats dd { font-size: 24px; }
   .search { flex-basis: 100%; }
   .filters { display: grid; grid-template-columns: 1fr 1fr; width: 100%; }
   .dd-btn { width: 100%; justify-content: space-between; }
@@ -155,9 +171,26 @@ body { background: var(--bg); color: var(--fg); font: 15px/1.55 var(--f-body); }
     <div class="brand">
       <h1>TestMu AI Connector Marketplace</h1>
       <p>Connectors that work with TestMu AI: MCP servers, CLIs, plugins and integrations, sorted by where they help in the development and testing lifecycle.</p>
+      <dl class="stats" id="stats" hidden>
+        <div><dt>Connectors</dt><dd id="stat-connectors"></dd></div>
+        <div><dt>Products covered</dt><dd id="stat-products"></dd></div>
+        <div><dt>Lifecycle stages covered</dt><dd id="stat-stages"></dd></div>
+      </dl>
       <p class="status-line" id="status-line" role="status"><span class="dot"></span><span>Loading catalog…</span></p>
     </div>
-    <button class="btn primary" type="button" data-add>Add your connector</button>
+    <aside class="build-card" aria-labelledby="build-title">
+      <p class="eyebrow">For developers</p>
+      <h2 id="build-title">Build for TestMu AI</h2>
+      <ol>
+        <li><span class="n">1</span><span><b>Build it</b>Connect through our REST APIs, MCP server, test grid or webhooks.</span></li>
+        <li><span class="n">2</span><span><b>List it</b>Open a pull request with a short YAML file. Checks run in a minute.</span></li>
+      </ol>
+      <p class="note">Our team reviews every listing within 7 working days.</p>
+      <div class="actions">
+        <button class="btn primary" type="button" data-add>Add your connector</button>
+        <a class="btn" href="guides/building-a-connector.html">Developer guide</a>
+      </div>
+    </aside>
   </div>
 </header>
 
@@ -446,6 +479,12 @@ async function boot() {
   // Count only listings on the page: ones failing for 7+ days are left out of catalog.json.
   const shownHealth = HEALTH ? CATALOG.listings.map(l => HEALTH.listings[l.id]).filter(Boolean) : [];
   const hc = HEALTH && Object.fromEntries(['healthy', 'degraded', 'down'].map(s => [s, shownHealth.filter(h => h.status === s).length]));
+  // Hero numbers, from the catalog: so they're always true for what's listed.
+  const covered = (field) => new Set(CATALOG.listings.flatMap(l => [].concat(l[field]))).size;
+  document.getElementById('stat-connectors').textContent = CATALOG.count;
+  document.getElementById('stat-products').textContent = `${covered('products')} of ${CATALOG.taxonomy.products.length}`;
+  document.getElementById('stat-stages').textContent = `${covered('stages')} of ${CATALOG.taxonomy.stage_groups.reduce((n, g) => n + g.values.length, 0)}`;
+  document.getElementById('stats').hidden = false;
   // One health summary; the connector count lives in the results bar above the grid.
   const line = document.getElementById('status-line');
   if (hc) {
