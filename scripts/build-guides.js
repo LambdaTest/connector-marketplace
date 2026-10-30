@@ -36,6 +36,11 @@ function renderGuide(guide, repoUrl) {
       else token.href = repoUrl ? `${repoUrl}/${target.endsWith('/') ? 'tree' : 'blob'}/main/${target}` : '';
     },
     renderer: {
+      // Code blocks get a Copy button outside the scrolling <pre>, so it stays put.
+      code({ text, lang }) {
+        const cls = lang ? ` class="language-${esc(lang.split(/\s/)[0])}"` : '';
+        return `<div class="code-wrap"><button class="copy" type="button">Copy</button><pre><code${cls}>${esc(text)}</code></pre></div>\n`;
+      },
       heading({ tokens, depth }) {
         const html = this.parser.parseInline(tokens);
         const id = slug(html);
@@ -56,6 +61,18 @@ function renderGuide(guide, repoUrl) {
   return { body, toc };
 }
 
+// Copy buttons on code blocks (added by the code renderer above).
+const GUIDE_SCRIPT = `
+document.addEventListener('click', async (e) => {
+  const btn = e.target.closest('.code-wrap .copy');
+  if (!btn) return;
+  const pre = btn.nextElementSibling;
+  try { await navigator.clipboard.writeText(pre.textContent); btn.textContent = 'Copied'; }
+  catch { const r = document.createRange(); r.selectNodeContents(pre); getSelection().removeAllRanges(); getSelection().addRange(r); btn.textContent = 'Selected'; }
+  setTimeout(() => (btn.textContent = 'Copy'), 1500);
+});
+`;
+
 const GUIDE_CSS = `
 h1 { font: 600 clamp(28px, 4.4vw, 44px)/1.08 var(--f-display); letter-spacing: -.03em; margin: 0 0 14px; }
 .toc { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 8px; }
@@ -65,7 +82,8 @@ article h2 { font: 600 22px/1.25 var(--f-display); letter-spacing: -.02em; margi
 article h3 { font: 600 17px var(--f-display); letter-spacing: -.01em; margin: 22px 0 6px; scroll-margin-top: 12px; }
 article p, article li { max-width: 75ch; }
 article code { font: 12.5px var(--f-mono); background: var(--sunken); padding: 1px 5px; border-radius: 5px; overflow-wrap: anywhere; }
-article pre { background: var(--code-bg); color: var(--code-fg); border: 1px solid var(--code-line); border-radius: var(--radius); padding: 14px; overflow-x: auto; }
+article pre { background: var(--code-bg); color: var(--code-fg); border: 1px solid var(--code-line); border-radius: var(--radius); padding: 14px 72px 14px 14px; overflow-x: auto; margin: 0; }
+.code-wrap { position: relative; margin: 12px 0; }
 article pre code { background: none; padding: 0; color: inherit; overflow-wrap: normal; }
 article table { border-collapse: collapse; width: 100%; font-size: 13.5px; display: block; overflow-x: auto; }
 article th, article td { text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
@@ -85,6 +103,7 @@ function page(guide, { body, toc }, repoUrl) {
     pager,
     narrow: true,
     css: GUIDE_CSS,
+    script: GUIDE_SCRIPT,
     body: `  <h1>${esc(guide.title)}</h1>
   <nav class="toc" aria-label="On this page">${toc.map((t) => `<a href="#${t.id}">${t.html}</a>`).join('')}</nav>
   <article>
