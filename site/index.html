@@ -112,7 +112,8 @@ header.top { display: flex; flex-wrap: wrap; align-items: end; justify-content: 
 .logo { width: 44px; height: 44px; border-radius: 10px; flex: none; }
 .card-title { min-width: 0; }
 .card-title h3 { font: 700 16px/1.2 var(--f-display); margin: 0; }
-.card-title .vendor { color: var(--muted); font-size: 13px; }
+.card-title .vendor { color: var(--muted); font-size: 13px; display: flex; align-items: center; gap: 6px; min-width: 0; }
+.vendor-logo { width: 16px; height: 16px; border-radius: 4px; flex: none; object-fit: contain; background: #fff; }
 .works { font-size: 13px; color: var(--muted); }
 .works strong { color: var(--accent); font-weight: 600; }
 .works strong.plat { color: var(--sdlc); }
@@ -314,7 +315,7 @@ function card(l) {
   return `<a class="card" href="connectors/${encodeURIComponent(l.id)}/">
     <div class="card-top">
       <img class="logo" src="${esc(logoSrc(l))}" alt="">
-      <div class="card-title"><h3>${esc(l.name)}</h3><div class="vendor">${esc(l.vendor.name)}</div></div>
+      <div class="card-title"><h3>${esc(l.name)}</h3><div class="vendor">${l.vendor.logo ? `<img class="vendor-logo" src="${esc(l.vendor.logo)}" alt="">` : ''}<span>${esc(l.vendor.name)}</span></div></div>
       <span class="badge ${l.badge}">${CATALOG.taxonomy.badges.find(b => b.id === l.badge)?.verified_registry ? SHIELD : ''}${esc(label(CATALOG.taxonomy.badges, l.badge))}</span>
     </div>
     <p class="summary" title="${esc(l.summary || '')}">${esc(l.summary || '')}</p>

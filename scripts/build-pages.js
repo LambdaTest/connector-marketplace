@@ -16,7 +16,9 @@ const CSS = `
 .hero { display: grid; grid-template-columns: auto 1fr; gap: 6px 18px; align-items: center; margin-bottom: 8px; }
 .hero .logo { width: 72px; height: 72px; border-radius: 16px; grid-row: span 2; }
 .hero h1 { font: 800 clamp(26px, 4vw, 38px)/1.1 var(--f-display); letter-spacing: -.02em; margin: 0; overflow-wrap: anywhere; }
-.hero .by { color: var(--muted); }
+.hero .by { color: var(--muted); display: flex; align-items: center; gap: 8px; min-width: 0; }
+.vendor-logo { width: 20px; height: 20px; border-radius: 5px; flex: none; object-fit: contain; background: #fff; }
+.kv .vendor-logo { width: 16px; height: 16px; border-radius: 4px; vertical-align: -3px; margin-right: 6px; }
 .summary { font-size: 17px; max-width: 70ch; margin: 14px 0; }
 .actions { display: flex; flex-wrap: wrap; gap: 10px; margin: 18px 0 8px; }
 .layout { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 28px; margin-top: 28px; align-items: start; }
@@ -68,6 +70,7 @@ function connectorPage(l, catalog, { repoUrl }) {
   const env = l.install.env || [];
   const caps = l.integration.capabilities || [];
   const root = '../../';
+  const vendorLogo = l.vendor.logo ? `<img class="vendor-logo" src="${root}${esc(l.vendor.logo)}" alt="">` : '';
   const report = repoUrl
     ? `<a href="${esc(`${repoUrl}/issues/new?template=report-broken-listing.yml&title=${encodeURIComponent(`[Broken] ${l.id}`)}`)}" target="_blank" rel="noopener">Report a problem with this connector</a>`
     : '';
@@ -77,7 +80,7 @@ function connectorPage(l, catalog, { repoUrl }) {
   <header class="hero">
     <img class="logo" src="${root}${esc(l.logo)}" alt="">
     <h1>${esc(l.name)}</h1>
-    <div class="by">by ${ext(l.vendor.url, l.vendor.name)}</div>
+    <div class="by">by ${vendorLogo}${ext(l.vendor.url, l.vendor.name)}</div>
   </header>
   <div class="meta">
     <span class="badge ${esc(l.badge)}">${t.badges.find((b) => b.id === l.badge)?.verified_registry ? SHIELD : ''}${esc(label(t.badges, l.badge))}</span>
@@ -117,7 +120,7 @@ function connectorPage(l, catalog, { repoUrl }) {
       <section class="section">
         <h2>Details</h2>
         <dl class="kv">
-          <dt>Vendor</dt><dd>${ext(l.vendor.url, l.vendor.name)}</dd>
+          <dt>Vendor</dt><dd>${vendorLogo}${ext(l.vendor.url, l.vendor.name)}</dd>
           <dt>Docs</dt><dd>${ext(l.docs_url)}</dd>
           <dt>Privacy</dt><dd>${ext(l.privacy_url)}</dd>
           <dt>Support</dt><dd>${[l.support.url ? ext(l.support.url) : '', l.support.email ? `<a href="mailto:${esc(l.support.email)}">${esc(l.support.email)}</a>` : ''].filter(Boolean).join('<br>')}</dd>

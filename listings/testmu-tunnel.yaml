@@ -4,6 +4,7 @@ summary: Test locally hosted or private staging apps on cloud browsers and real 
 vendor:
   name: TestMu AI
   url: https://www.testmuai.com
+  logo: logos/vendor-testmu-ai.png
   github: LambdaTest
 products:
   - automation-cloud

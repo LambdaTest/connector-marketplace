@@ -4,6 +4,7 @@ summary: Run your test suite on HyperExecute from a laptop or any CI pipeline wi
 vendor:
   name: TestMu AI
   url: https://www.testmuai.com
+  logo: logos/vendor-testmu-ai.png
   github: LambdaTest
 products:
   - hyperexecute

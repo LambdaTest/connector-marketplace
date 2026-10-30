@@ -27,7 +27,7 @@ function main() {
   const catalog = buildCatalog(report.listings, report.taxonomy);
   fs.writeFileSync(path.join(out, 'catalog.json'), `${JSON.stringify(catalog)}\n`);
 
-  const used = new Set(catalog.listings.map((l) => l.logo));
+  const used = new Set(catalog.listings.flatMap((l) => [l.logo, l.vendor.logo].filter(Boolean)));
   for (const logo of used) fs.copyFileSync(path.join(ROOT, logo), path.join(out, logo));
 
   const repoUrl =

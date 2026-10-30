@@ -4,6 +4,7 @@ summary: Generate end-to-end tests from a PRD or plain description and run them 
 vendor:
   name: TestMu AI
   url: https://www.testmuai.com
+  logo: logos/vendor-testmu-ai.png
   github: LambdaTest
 products:
   - kaneai

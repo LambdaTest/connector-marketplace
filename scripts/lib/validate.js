@@ -128,7 +128,7 @@ function describe(err, taxonomy) {
     case 'pattern':
       if (err.parentSchema.pattern?.startsWith('^https://')) return `${field}: must be an https:// URL (got "${err.data}")`;
       if (err.instancePath === '/id') return `id: "${err.data}" must be lowercase kebab-case, e.g. "acme-test-runner"`;
-      if (err.instancePath === '/logo') return `logo: "${err.data}" must look like logos/<name>.svg or logos/<name>.png`;
+      if (err.instancePath === '/logo' || err.instancePath === '/vendor/logo') return `${field}: "${err.data}" must look like logos/<name>.svg or logos/<name>.png`;
       return `${field}: "${err.data}" has an invalid format (expected pattern ${err.params.pattern})`;
     case 'format':
       return `${field}: "${err.data}" is not a valid ${err.params.format}`;
@@ -168,6 +168,10 @@ function semanticChecks(listing, file, ctx) {
 
   if (listing.logo && !fs.existsSync(path.join(ctx.root, listing.logo))) {
     add('logo', `file "${listing.logo}" does not exist. Add it to the logos/ folder in the same PR`);
+  }
+  const vendorLogo = listing.vendor?.logo;
+  if (typeof vendorLogo === 'string' && !fs.existsSync(path.join(ctx.root, vendorLogo))) {
+    add('vendor.logo', `file "${vendorLogo}" does not exist. Add it to the logos/ folder in the same PR`);
   }
 
   const badge = ctx.taxonomy.badges.find((b) => b.id === listing.badge);

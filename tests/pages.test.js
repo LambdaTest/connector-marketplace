@@ -45,3 +45,10 @@ test('report link appears only when the repo is known', () => {
   assert.ok(!connectorPage(byId('kane-cli'), catalog, { repoUrl: '' }).includes('Report a problem'));
   assert.ok(connectorPage(byId('kane-cli'), catalog, { repoUrl: 'https://github.com/o/r' }).includes('https://github.com/o/r/issues/new?template=report-broken-listing.yml'));
 });
+
+test('vendor logo shows next to the vendor name on the page', () => {
+  const html = connectorPage(byId('testmu-mcp'), catalog, { repoUrl: '' });
+  assert.match(html, /<div class="by">by <img class="vendor-logo" src="\.\.\/\.\.\/logos\/vendor-testmu-ai\.png" alt="">/);
+  const noLogo = { ...byId('testmu-mcp'), vendor: { ...byId('testmu-mcp').vendor, logo: undefined } };
+  assert.ok(!connectorPage(noLogo, catalog, { repoUrl: '' }).includes('vendor-logo"'));
+});

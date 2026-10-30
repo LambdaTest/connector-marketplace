@@ -190,3 +190,11 @@ test('secret scan finds access keys in comments and shell snippets', () => {
   const hits = scanFile(file);
   assert.deepEqual(hits.map((h) => [h.line, h.rule]), [[2, 'TestMu AI access key']]);
 });
+
+test('vendor.logo must be a logos/ path to a file that exists', () => {
+  const missing = writeListing('vendor-logo-missing', { ...sample(), id: 'vendor-logo-missing', vendor: { ...sample().vendor, logo: 'logos/vendor-nope.svg' } });
+  const bad = writeListing('vendor-logo-bad', { ...sample(), id: 'vendor-logo-bad', vendor: { ...sample().vendor, logo: 'https://acme.example/logo.png' } });
+  const [m, b] = validateFiles([missing, bad]).results;
+  assert.ok(m.errors.some((e) => e.message.startsWith('vendor.logo: file "logos/vendor-nope.svg" does not exist')), JSON.stringify(m.errors));
+  assert.ok(b.errors.some((e) => e.message.startsWith('vendor.logo: "https://acme.example/logo.png" must look like logos/')), JSON.stringify(b.errors));
+});

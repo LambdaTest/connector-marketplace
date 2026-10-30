@@ -51,7 +51,7 @@ function cardPreview(l, taxonomy, logoBase) {
   const stageLabel = (id) => taxonomy.stages.find((s) => s.id === id)?.label || id;
   const logo = logoBase && /^logos\/[a-z0-9-]+\.(svg|png)$/.test(l.logo || '') ? `<img src="${logoBase}${l.logo}" width="48" height="48" align="left" alt="">` : '';
   const rows = [
-    ['Vendor', md(l.vendor?.name)],
+    ['Vendor', `${logoBase && /^logos\/[a-z0-9-]+\.(svg|png)$/.test(l.vendor?.logo || '') ? `<img src="${logoBase}${l.vendor.logo}" width="16" height="16" alt=""> ` : ''}${md(l.vendor?.name)}`],
     ['Works with', (l.products || []).map((p) => md(label(taxonomy.products, p))).join(', ') || '_none listed_'],
     l.integration?.platform ? ['Connects', `${md(l.integration.platform)} ⇄ our products`] : null,
     ['Type', md(label(taxonomy.types, l.type))],
@@ -113,14 +113,14 @@ async function main() {
     const linkWarns = links.filter((c) => c.outcome === 'warn');
     const health = links.find((c) => c.kind === 'health');
     const fileSecrets = secrets.filter((s) => s.file === file);
-    const logoFile = listing?.logo;
-    if (logoFile) reportedLogos.add(logoFile);
-    const thisLogo = logoProblems.filter((p) => logoFile && p.startsWith(`${logoFile}:`));
+    const logoFiles = [listing?.logo, listing?.vendor?.logo].filter((f) => typeof f === 'string');
+    logoFiles.forEach((f) => reportedLogos.add(f));
+    const thisLogo = logoProblems.filter((p) => logoFiles.some((f) => p.startsWith(`${f}:`)));
 
     const checks = [
       ['Schema and categories', otherErrs.length === 0, otherErrs.length ? `${otherErrs.length} problem(s), see below` : ''],
       ['Works with our products', productErrs.length === 0, productErrs.length ? 'needs `products` and `integration`' : `${(listing?.products || []).length} product(s)`],
-      ['Logo', thisLogo.length === 0 && !errs.some((e) => e.message.startsWith('logo:')), thisLogo.join('; ')],
+      ['Logo', thisLogo.length === 0 && !errs.some((e) => /^(vendor\.)?logo:/.test(e.message)), thisLogo.join('; ')],
       ['No secrets', fileSecrets.length === 0, fileSecrets.map((s) => `line ${s.line}: ${s.rule}`).join('; ')],
       ['Links', linkFails.length === 0, linkFails.length ? linkFails.map((c) => md(describeCheck(c))).join('; ') : `${links.filter((c) => c.kind === 'link').length} checked${linkWarns.length ? `, ${linkWarns.length} to check by hand` : ''}`],
       [

@@ -31,7 +31,7 @@ You need:
 - A working connector, with public setup docs that show how to use it with our product (see [step 1: Build your connector](docs/building-a-connector.md))
 - A privacy policy that covers the data the connector handles
 - A support email or page where a person answers
-- A square logo (SVG, or PNG at least 128×128 px), at most 100 KB
+- A square logo for the connector, and one for your company (SVG, or PNG at least 128×128 px), each at most 100 KB
 - Node.js 20 or newer, to run the checks on your machine
 
 ## Fork the repo and create a branch
@@ -46,11 +46,12 @@ npm ci
 
 ## Add your listing and logo
 
-Add exactly two files:
+Add these files:
 
 ```
 listings/<your-id>.yaml
-logos/<your-id>.svg      (or .png)
+logos/<your-id>.svg          (or .png) the connector's logo
+logos/vendor-<company>.svg   (or .png) your company's logo, shown next to your name; skip it if an earlier listing of yours added it
 ```
 
 The quickest start is to copy the example closest to your connector from [`examples/listings/`](examples/listings/):
@@ -74,6 +75,7 @@ summary: Plan, run and track tests on our platform without leaving Jira.
 vendor:
   name: Acme Apps
   url: https://acme-apps.example
+  logo: logos/vendor-acme-apps.svg
   github: acme-apps
 products:
   - test-manager
@@ -117,6 +119,7 @@ Values marked *taxonomy* must be ids from [`taxonomy.yaml`](taxonomy.yaml). If n
 | `name` | Yes | Display name, 2–60 characters |
 | `summary` | No, recommended | One line for the card, 10–160 characters. Cards show 2 lines. |
 | `vendor.name`, `vendor.url` | Yes | Your company name and https website |
+| `vendor.logo` | No, recommended | Your company's logo, `logos/vendor-<company>.svg` or `.png`. Shown next to your name on cards and your connector's page. All your listings can share one file. |
 | `vendor.github` | No | Your GitHub org. Reviews from its public members don't count toward ratings. |
 | `products` | Yes | *taxonomy*: at least one of our products the connector works with |
 | `integration.summary` | Yes | What a user can do with our product through it, 20–300 characters |
@@ -141,6 +144,8 @@ Values marked *taxonomy* must be ids from [`taxonomy.yaml`](taxonomy.yaml). If n
 Some protocols need a matching install field: `streamable-http` and `sse` need `install.url`, and `stdio` needs `install.command`. All URLs must use `https://`.
 
 ### Logo rules
+
+These apply to both the connector logo and your company logo.
 
 - Square, SVG or PNG; PNG at least 128×128 px
 - At most 100 KB

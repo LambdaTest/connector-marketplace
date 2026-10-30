@@ -4,6 +4,7 @@ summary: Run, debug and triage tests from your AI assistant across HyperExecute,
 vendor:
   name: TestMu AI
   url: https://www.testmuai.com
+  logo: logos/vendor-testmu-ai.png
   github: LambdaTest
 products:
   - hyperexecute

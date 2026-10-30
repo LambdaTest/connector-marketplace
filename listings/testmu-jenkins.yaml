@@ -4,6 +4,7 @@ summary: Run Selenium tests on the cloud grid from Jenkins jobs and see results 
 vendor:
   name: TestMu AI
   url: https://www.testmuai.com
+  logo: logos/vendor-testmu-ai.png
   github: LambdaTest
 products:
   - automation-cloud
