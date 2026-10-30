@@ -17,8 +17,12 @@ scripts/                     validate, build-catalog, check-logos, scan-secrets,
 examples/                    fictional partner listings to copy (validated, never published)
 docs/building-a-connector.md how a connector talks to our platform: REST APIs, MCP server, grid, webhooks, auth
 site/index.html              the marketplace page (published to GitHub Pages)
+site/assets/base.css         shared styles for connector pages and guides
 tests/                       unit tests and broken fixtures
 ```
+
+The site build also writes one page per connector (`connectors/<id>/`, `scripts/build-pages.js`)
+and the two partner guides (`guides/`, `scripts/build-guides.js`), all with breadcrumbs.
 
 ## Listing format
 

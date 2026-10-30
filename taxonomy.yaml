@@ -94,17 +94,21 @@ types:
 # `health_probe` replaces the plain GET on health_url with a protocol check:
 #   mcp-tools-list  MCP initialize + tools/list without credentials, as registries do
 #   a2a-agent-card  health_url is an A2A agent card with the required fields
+# `mcp: true` marks MCP transports: connector pages show MCP client setup (Claude Code, JSON config) for them.
 protocols:
   - id: streamable-http
     label: Streamable HTTP (MCP)
     install_requires: url
     health_probe: mcp-tools-list
+    mcp: true
   - id: sse
     label: Server-Sent Events (MCP, legacy)
     install_requires: url
+    mcp: true
   - id: stdio
     label: stdio (MCP, local)
     install_requires: command
+    mcp: true
   - id: rest
     label: REST
   - id: graphql

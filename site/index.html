@@ -9,7 +9,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@500;700;800&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
 <style>
-/* Layout: header + search, a two-lane lifecycle track (SDLC above, STLC below) that doubles as the stage filter, then a card grid with a detail drawer. */
+/* Layout: header + search, a two-lane lifecycle track (SDLC above, STLC below) that doubles as the stage filter, then a card grid.
+   Each card links to its own page (connectors/<id>/, built by scripts/build-pages.js); the drawer holds "Add your connector". */
 :root {
   --bg: #f5f7f8;
   --surface: #ffffff;
@@ -105,7 +106,7 @@ header.top { display: flex; flex-wrap: wrap; align-items: end; justify-content: 
 
 /* Grid */
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; }
-.card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px; display: grid; grid-template-rows: auto 1fr auto auto auto; gap: 12px; cursor: pointer; text-align: left; color: inherit; font: inherit; transition: border-color .15s, box-shadow .15s, transform .15s; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px; display: grid; grid-template-rows: auto 1fr auto auto auto; gap: 12px; cursor: pointer; text-align: left; color: inherit; font: inherit; text-decoration: none; transition: border-color .15s, box-shadow .15s, transform .15s; }
 .card:hover { border-color: var(--accent); box-shadow: var(--shadow); transform: translateY(-1px); }
 .card-top { display: flex; gap: 12px; align-items: center; }
 .logo { width: 44px; height: 44px; border-radius: 10px; flex: none; }
@@ -115,7 +116,6 @@ header.top { display: flex; flex-wrap: wrap; align-items: end; justify-content: 
 .works { font-size: 13px; color: var(--muted); }
 .works strong { color: var(--accent); font-weight: 600; }
 .works strong.plat { color: var(--sdlc); }
-.caps { margin: 6px 0 8px; padding-left: 18px; display: grid; gap: 3px; font-size: 14px; }
 /* At most 2 lines, then an ellipsis. The full text is in the title tooltip and the details panel. */
 .card p.summary { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.5; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden; overflow-wrap: anywhere; align-self: start; max-height: 3em; }
 .meta { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
@@ -132,26 +132,10 @@ header.top { display: flex; flex-wrap: wrap; align-items: end; justify-content: 
 .status.healthy { color: var(--verified); }
 .status.degraded { color: var(--warn); }
 .status.down { color: var(--down); }
-.health.degraded { background: var(--warn-soft); color: var(--warn); }
-.health.down { background: var(--down-soft); color: var(--down); }
-.health ul { margin: 6px 0 0; padding-left: 18px; font-size: 13px; }
 .rating { font: 600 12.5px/1 var(--f-body); display: inline-flex; gap: 6px; align-items: center; color: var(--fg); font-variant-numeric: tabular-nums; }
 .rating .stars { color: var(--star); letter-spacing: 1px; }
 .rating .muted { color: var(--muted); font-weight: 500; }
 .card-foot { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
-.ratings-box { display: grid; grid-template-columns: auto 1fr; gap: 18px; align-items: center; }
-.ratings-box .big { font: 800 40px/1 var(--f-display); font-variant-numeric: tabular-nums; }
-.ratings-box .big .stars { display: block; font-size: 15px; color: var(--star); letter-spacing: 2px; margin-top: 6px; }
-.ratings-box .big small { display: block; font: 500 12px var(--f-body); color: var(--muted); margin-top: 4px; }
-.dist { display: grid; gap: 4px; font: 500 12px var(--f-mono); color: var(--muted); }
-.dist div { display: grid; grid-template-columns: 22px 1fr 26px; gap: 8px; align-items: center; }
-.dist .bar { height: 7px; border-radius: 4px; background: var(--sunken); overflow: hidden; }
-.dist .bar span { display: block; height: 100%; background: var(--star); }
-.reviews { display: grid; gap: 12px; margin-top: 14px; }
-.review { border-top: 1px solid var(--line); padding-top: 10px; font-size: 14px; }
-.review .who { display: flex; gap: 8px; align-items: center; font-size: 13px; color: var(--muted); }
-.review .who .stars { color: var(--star); }
-.review p { margin: 4px 0 0; overflow-wrap: anywhere; white-space: pre-line; }
 .empty-state { grid-column: 1 / -1; background: var(--surface); border: 1px dashed var(--line); border-radius: 14px; padding: 28px; text-align: center; color: var(--muted); }
 
 /* Add-your-connector drawer: two ordered steps, build then list */
@@ -174,28 +158,10 @@ header.top { display: flex; flex-wrap: wrap; align-items: end; justify-content: 
 .drawer-head h2 { font: 800 22px/1.15 var(--f-display); margin: 0; }
 .drawer-head .vendor { color: var(--muted); font-size: 14px; }
 .close { margin-left: auto; align-self: start; }
-.section h4 { font: 700 12px var(--f-mono); text-transform: uppercase; letter-spacing: .07em; color: var(--muted); margin: 0 0 8px; }
-.kv { display: grid; grid-template-columns: 110px 1fr; gap: 8px 12px; font-size: 14px; }
-.kv dt { color: var(--muted); }
-.kv dd { margin: 0; min-width: 0; overflow-wrap: anywhere; }
-.kv a { color: var(--accent); }
-.tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--line); margin-bottom: 10px; flex-wrap: wrap; }
-.tab { background: none; border: 0; border-bottom: 2px solid transparent; padding: 8px 10px; font: 600 13px var(--f-body); color: var(--muted); cursor: pointer; }
-.tab.on { color: var(--fg); border-color: var(--accent); }
-.code { position: relative; background: var(--code-bg); color: var(--code-fg); border-radius: 10px; padding: 14px 14px 14px; overflow-x: auto; }
-/* Wrap long commands so no text runs under the Copy button; pre-wrap keeps JSON indentation. */
-.code pre { margin: 0; font: 12.5px/1.6 var(--f-mono); white-space: pre-wrap; overflow-wrap: anywhere; padding-right: 64px; }
-.copy { position: absolute; top: 8px; right: 8px; font: 600 12px var(--f-body); background: rgba(255,255,255,.1); color: var(--code-fg); border: 1px solid rgba(255,255,255,.18); border-radius: 6px; padding: 5px 9px; cursor: pointer; }
-.health { display: flex; gap: 10px; align-items: center; padding: 12px 14px; border-radius: 10px; background: var(--verified-soft); color: var(--verified); font-size: 14px; }
-.health.none { background: var(--sunken); color: var(--muted); }
 .dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; flex: none; }
-.env { display: grid; gap: 6px; }
-.env div { font-size: 14px; }
-.env code { font: 12.5px var(--f-mono); background: var(--sunken); padding: 2px 6px; border-radius: 5px; }
 
 @media (max-width: 640px) {
   .drawer { top: auto; height: 88%; width: 100%; border-left: 0; border-top: 1px solid var(--line); border-radius: 16px 16px 0 0; }
-  .kv { grid-template-columns: 90px 1fr; }
 }
 @media (prefers-reduced-motion: reduce) { .card { transition: none; } .card:hover { transform: none; } }
 </style>
@@ -297,9 +263,6 @@ function ratingLine(l) {
   if (!r) return '<span class="rating"><span class="muted">No ratings yet</span></span>';
   return `<span class="rating" aria-label="Rated ${r.average} out of 5 from ${r.count} ratings"><span class="stars" aria-hidden="true">${starStr(r.average)}</span>${r.average.toFixed(1)}<span class="muted">(${r.count})</span></span>`;
 }
-function rateUrl(l) {
-  return `${REPO_URL}/issues/new?template=review-connector.yml&listing=${encodeURIComponent(l.id)}&title=${encodeURIComponent('[Review] ' + l.name)}`;
-}
 function healthOf(l) { return HEALTH?.listings?.[l.id] || null; }
 function statusPill(l) {
   const h = healthOf(l);
@@ -348,17 +311,17 @@ function renderChips(id, list, key, field) {
 function card(l) {
   const stages = l.stages.slice(0, 3).map(s => `<span class="tag ${stageInfo[s].group}">${esc(stageInfo[s].label)}</span>`).join('');
   const more = l.stages.length > 3 ? `<span class="tag">+${l.stages.length - 3}</span>` : '';
-  return `<button type="button" class="card" data-id="${l.id}">
+  return `<a class="card" href="connectors/${encodeURIComponent(l.id)}/">
     <div class="card-top">
       <img class="logo" src="${esc(logoSrc(l))}" alt="">
       <div class="card-title"><h3>${esc(l.name)}</h3><div class="vendor">${esc(l.vendor.name)}</div></div>
-      <span class="badge ${l.badge}">${l.badge !== 'community' ? SHIELD : ''}${esc(label(CATALOG.taxonomy.badges, l.badge))}</span>
+      <span class="badge ${l.badge}">${CATALOG.taxonomy.badges.find(b => b.id === l.badge)?.verified_registry ? SHIELD : ''}${esc(label(CATALOG.taxonomy.badges, l.badge))}</span>
     </div>
     <p class="summary" title="${esc(l.summary || '')}">${esc(l.summary || '')}</p>
     <div class="works">${l.integration.platform ? `<strong class="plat">${esc(l.integration.platform)}</strong> ⇄ ` : 'Works with '}${l.products.map(p => `<strong>${esc(label(CATALOG.taxonomy.products, p))}</strong>`).join(', ')}</div>
     <div class="meta"><span class="tag">${esc(label(CATALOG.taxonomy.types, l.type))}</span>${stages}${more}</div>
     <div class="card-foot">${ratingLine(l)}${statusPill(l)}</div>
-  </button>`;
+  </a>`;
 }
 
 function renderRatingChips() {
@@ -389,102 +352,7 @@ function render() {
   renderRatingChips();
 }
 
-function snippets(l) {
-  const out = [];
-  const remoteMcp = l.install.url && l.protocols.some(p => p === 'streamable-http' || p === 'sse');
-  const localMcp = l.install.command && l.protocols.includes('stdio');
-  const env = l.install.env || [];
-  if (remoteMcp) {
-    out.push(['Claude Code', `claude mcp add --transport http ${l.id} ${l.install.url}`]);
-    out.push(['JSON config', JSON.stringify({ mcpServers: { [l.id]: { type: 'http', url: l.install.url } } }, null, 2)]);
-  }
-  if (localMcp) {
-    const [cmd, ...args] = l.install.command.split(' ');
-    const cfg = { command: cmd, args };
-    if (env.length) cfg.env = Object.fromEntries(env.map(e => [e.name, `<your ${e.name}>`]));
-    out.push([remoteMcp ? 'Local (stdio)' : 'Claude Code', `claude mcp add ${l.id} -- ${l.install.command}`]);
-    out.push([remoteMcp ? 'Local JSON' : 'JSON config', JSON.stringify({ mcpServers: { [l.id]: cfg } }, null, 2)]);
-  }
-  // CLIs, plugins and integrations: show the command or install page as-is, not as an MCP server.
-  if (!remoteMcp && l.install.url) out.push(['Install', `Install from:\n${l.install.url}`]);
-  if (!localMcp && l.install.command) {
-    const exports = env.map(e => `export ${e.name}=<your ${e.name}>`);
-    out.push(['Command', [...exports, l.install.command].join('\n')]);
-  }
-  return out;
-}
-
-function ratingsSection(l) {
-  const r = ratingOf(l);
-  const btn = REPO_URL ? `<a class="btn" href="${esc(rateUrl(l))}" target="_blank" rel="noopener">Rate this connector</a>` : '';
-  if (!r) return `<div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap"><span style="color:var(--muted);font-size:14px">No ratings yet. Used it? Be the first to rate it.</span>${btn}</div>`;
-  const max = Math.max(...Object.values(r.distribution), 1);
-  const dist = [5, 4, 3, 2, 1].map(n => `<div><span>${n}★</span><span class="bar"><span style="width:${(r.distribution[n] / max) * 100}%"></span></span><span>${r.distribution[n]}</span></div>`).join('');
-  const reviews = r.recent.map(v => `<div class="review"><div class="who"><span class="stars" aria-label="${v.rating} stars">${starStr(v.rating)}</span><a href="${esc(v.url)}" target="_blank" rel="noopener" style="color:inherit">${esc(v.login)}</a> · ${fmtDate(v.date)}</div><p>${esc(v.text)}</p></div>`).join('');
-  return `<div class="ratings-box"><div class="big">${r.average.toFixed(1)}<span class="stars" aria-hidden="true">${starStr(r.average)}</span><small>${r.count} rating${r.count === 1 ? '' : 's'}</small></div><div class="dist">${dist}</div></div>
-    ${reviews ? `<div class="reviews">${reviews}</div>` : ''}
-    <div style="margin-top:14px">${btn}</div>`;
-}
-
 let lastFocus = null;
-function openDrawer(id) {
-  const l = CATALOG.listings.find(x => x.id === id);
-  const snips = snippets(l);
-  const stageTags = l.stages.map(s => `<span class="tag ${stageInfo[s].group}">${esc(stageInfo[s].label)}</span>`).join('');
-  const h = healthOf(l);
-  const health = !h
-    ? `<div class="health none"><span class="dot"></span><div>Not checked yet. Every listing is checked every 6 hours.</div></div>`
-    : `<div class="health ${h.status}"><span class="dot"></span><div><strong>${{ healthy: 'Healthy', degraded: 'A public link is broken', down: `Down since ${fmtDate(h.down_since)}` }[h.status]}</strong>
-        <div style="font-size:13px;opacity:.85">Checked ${esc(ago(h.checked_at))}${h.health ? ` · endpoint answered HTTP ${h.health.status} in ${h.health.ms} ms` : ' · links only (no health endpoint)'}${h.status !== 'healthy' && h.last_ok ? ` · last OK ${fmtDate(h.last_ok)}` : ''}</div>
-        ${h.problems.length ? `<ul>${h.problems.map(p => `<li>${esc(p.message)}</li>`).join('')}</ul>` : ''}</div></div>`;
-  const report = REPO_URL ? `<a href="${esc(REPO_URL)}/issues/new?template=report-broken-listing.yml&title=${encodeURIComponent('[Broken] ' + l.id)}" target="_blank" rel="noopener" style="color:var(--accent);font-size:13px">Report a problem with this connector</a>` : '';
-  const env = (l.install.env || []).length ? `<div class="section"><h4>You'll need</h4><div class="env">${l.install.env.map(e =>
-    `<div><code>${esc(e.name)}</code> ${e.required ? '' : '<span style="color:var(--muted)">(optional)</span>'} · ${esc(e.description)}</div>`).join('')}</div></div>` : '';
-  const d = document.getElementById('drawer');
-  d.innerHTML = `
-    <div class="drawer-head">
-      <img class="logo" src="${esc(logoSrc(l))}" alt="">
-      <div><h2 id="d-name">${esc(l.name)}</h2><div class="vendor">by ${esc(l.vendor.name)}</div></div>
-      <button class="btn close" type="button" id="close" aria-label="Close">Close</button>
-    </div>
-    <div class="meta"><span class="badge ${l.badge}" style="margin-left:0">${l.badge !== 'community' ? SHIELD : ''}${esc(label(CATALOG.taxonomy.badges, l.badge))}</span><span class="tag">${esc(label(CATALOG.taxonomy.types, l.type))}</span>${l.protocols.map(p => `<span class="tag">${esc(label(CATALOG.taxonomy.protocols, p))}</span>`).join('')}</div>
-    <p style="margin:0">${esc(l.summary || '')}</p>
-    <div class="section"><h4>${l.integration.platform ? `Connects ${esc(l.integration.platform)} to our products` : 'Works with our products'}</h4>
-      <div class="meta" style="margin-bottom:8px">${l.integration.platform ? `<span class="tag sdlc">${esc(l.integration.platform)}</span><span style="color:var(--muted)">⇄</span>` : ''}${l.products.map(p => `<span class="tag stlc">${esc(label(CATALOG.taxonomy.products, p))}</span>`).join('')}</div>
-      <p style="margin:0 0 6px">${esc(l.integration.summary)}</p>
-      ${(l.integration.capabilities || []).length ? `<ul class="caps">${l.integration.capabilities.map(c => `<li>${esc(c)}</li>`).join('')}</ul>` : ''}
-      <a href="${esc(l.integration.docs_url)}" target="_blank" rel="noopener" style="color:var(--accent);font-size:14px">Setup guide →</a>
-    </div>
-    <div class="section"><h4>Install</h4>
-      <div class="tabs" role="tablist">${snips.map((s, i) => `<button class="tab ${i ? '' : 'on'}" role="tab" data-snip="${i}" type="button">${esc(s[0])}</button>`).join('')}</div>
-      <div class="code"><button class="copy" type="button" id="copy">Copy</button><pre id="snip">${esc(snips[0][1])}</pre></div>
-    </div>
-    ${env}
-    ${RATINGS_ENABLED ? `<div class="section"><h4>Ratings</h4>${ratingsSection(l)}</div>` : ''}
-    <div class="section"><h4>Status</h4>${health}<div style="margin-top:8px">${report}</div></div>
-    <div class="section"><h4>Lifecycle stages</h4><div class="meta">${stageTags}</div></div>
-    <div class="section"><h4>Details</h4>
-      <dl class="kv">
-        <dt>Docs</dt><dd><a href="${esc(l.docs_url)}" target="_blank" rel="noopener">${esc(l.docs_url.replace('https://', ''))}</a></dd>
-        <dt>Privacy</dt><dd><a href="${esc(l.privacy_url)}" target="_blank" rel="noopener">${esc(l.privacy_url.replace('https://', ''))}</a></dd>
-        <dt>Support</dt><dd>${l.support.url ? `<a href="${esc(l.support.url)}" target="_blank" rel="noopener">${esc(l.support.url.replace('https://', ''))}</a>` : ''}${l.support.email ? `<span style="user-select:all">${esc(l.support.email)}</span>` : ''}</dd>
-        <dt>Auth</dt><dd>${esc(l.install.auth || 'not stated')}</dd>
-        ${l.install.registry_name ? `<dt>MCP Registry</dt><dd><code style="font:12.5px var(--f-mono)">${esc(l.install.registry_name)}</code></dd>` : ''}
-        <dt>Listing id</dt><dd><code style="font:12.5px var(--f-mono)">${esc(l.id)}</code></dd>
-      </dl>
-    </div>`;
-  d.querySelectorAll('.tab').forEach(t => t.onclick = () => {
-    d.querySelectorAll('.tab').forEach(x => x.classList.toggle('on', x === t));
-    document.getElementById('snip').textContent = snips[+t.dataset.snip][1];
-  });
-  document.getElementById('copy').onclick = async (e) => {
-    const text = document.getElementById('snip').textContent;
-    try { await navigator.clipboard.writeText(text); e.target.textContent = 'Copied'; }
-    catch { const r = document.createRange(); r.selectNodeContents(document.getElementById('snip')); const s = getSelection(); s.removeAllRanges(); s.addRange(r); e.target.textContent = 'Selected'; }
-    setTimeout(() => e.target.textContent = 'Copy', 1500);
-  };
-  showDrawer(l.id);
-}
 const ADD_HASH = 'list-yours';
 function openAddDrawer() {
   const d = document.getElementById('drawer');
@@ -506,14 +374,13 @@ function closeDrawer() {
 
 document.getElementById('q').addEventListener('input', e => { state.q = e.target.value.trim().toLowerCase(); render(); });
 document.addEventListener('click', e => {
-  const t = e.target.closest('[data-stage],[data-product],[data-type],[data-badge],[data-rating],[data-id],[data-add],#reset,#clear-stages');
+  const t = e.target.closest('[data-stage],[data-product],[data-type],[data-badge],[data-rating],[data-add],#reset,#clear-stages');
   if (!t) return;
   if (t.dataset.stage) { state.stages.has(t.dataset.stage) ? state.stages.delete(t.dataset.stage) : state.stages.add(t.dataset.stage); render(); }
   else if (t.dataset.product) { state.product = state.product === t.dataset.product ? null : t.dataset.product; render(); }
   else if (t.dataset.type) { state.type = state.type === t.dataset.type ? null : t.dataset.type; render(); }
   else if (t.dataset.badge) { state.badge = state.badge === t.dataset.badge ? null : t.dataset.badge; render(); }
   else if (t.dataset.rating) { const v = Number(t.dataset.rating); state.minRating = state.minRating === v ? null : v; render(); }
-  else if (t.dataset.id) openDrawer(t.dataset.id);
   else if ('add' in t.dataset) openAddDrawer();
   else if (t.id === 'clear-stages') { state.stages.clear(); render(); }
   else if (t.id === 'reset') { Object.assign(state, { q: '', product: null, type: null, badge: null, minRating: null }); state.stages.clear(); document.getElementById('q').value = ''; render(); }
@@ -538,6 +405,9 @@ async function boot() {
   const hc = HEALTH && Object.fromEntries(['healthy', 'degraded', 'down'].map(s => [s, shownHealth.filter(h => h.status === s).length]));
   document.getElementById('status-line').textContent = `${CATALOG.count} connectors` +
     (hc ? ` · ${hc.healthy} healthy${hc.degraded ? `, ${hc.degraded} with a broken link` : ''}${hc.down ? `, ${hc.down} down` : ''} · checked ${ago(HEALTH.checked_at)}` : '');
+  const params = new URLSearchParams(location.search);
+  for (const key of ['product', 'type', 'badge']) if (params.get(key)) state[key] = params.get(key);
+  params.getAll('stage').forEach(s => state.stages.add(s));
   render();
   openFromHash();
   // Same-page links and edits to the URL's #part don't reload the page.
@@ -546,7 +416,8 @@ async function boot() {
 function openFromHash() {
   const id = decodeURIComponent(location.hash.slice(1));
   if (id === ADD_HASH) openAddDrawer();
-  else if (id && CATALOG.listings.some(l => l.id === id)) openDrawer(id);
+  // Old links opened a connector in the drawer (#<id>); it has its own page now.
+  else if (id && CATALOG.listings.some(l => l.id === id)) location.replace(`connectors/${encodeURIComponent(id)}/`);
 }
 boot();
 </script>

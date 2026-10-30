@@ -11,3 +11,6 @@ To turn ratings on:
 3. Run the Site workflow, or wait for the next scheduled run.
 
 `reviews.yml`, `scripts/build-ratings.js` and the site's rating UI all check `RATINGS_ENABLED`.
+
+Before turning ratings on, add a ratings section to the connector pages (`scripts/build-pages.js`).
+Cards on the marketplace page already show ratings; the per-connector pages don't yet.

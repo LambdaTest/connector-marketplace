@@ -2,7 +2,7 @@
 'use strict';
 
 // Builds the static marketplace site into dist/site/:
-//   index.html, catalog.json, logos/, guides/, .nojekyll
+//   index.html, catalog.json, logos/, assets/, connectors/<id>/, guides/, .nojekyll
 // health.json is written next to it by scripts/check-health.js.
 // The repo link comes from GITHUB_REPOSITORY in Actions, or REPO_URL locally.
 
@@ -12,6 +12,7 @@ const { validateFiles, listingFiles, formatResults } = require('./lib/validate')
 const { buildCatalog } = require('./build-catalog');
 const { ROOT } = require('./lib/taxonomy');
 const { buildGuides } = require('./build-guides');
+const { buildPages } = require('./build-pages');
 
 function main() {
   const report = validateFiles(listingFiles());
@@ -40,9 +41,11 @@ function main() {
     .replace('/*RATINGS_ENABLED*/false', String(ratingsEnabled));
   fs.writeFileSync(path.join(out, 'index.html'), html);
   fs.writeFileSync(path.join(out, '.nojekyll'), '');
+  fs.cpSync(path.join(ROOT, 'site', 'assets'), path.join(out, 'assets'), { recursive: true });
+  const pages = buildPages(out, catalog, { repoUrl });
   const guides = buildGuides(out, repoUrl);
 
-  console.log(`Built ${path.relative(ROOT, out)}/ with ${catalog.count} listing(s) and ${guides.length} guide(s)${repoUrl ? ` (repo: ${repoUrl})` : ''}${ratingsEnabled ? ', ratings on' : ''}`);
+  console.log(`Built ${path.relative(ROOT, out)}/ with ${catalog.count} listing(s), ${pages} connector page(s) and ${guides.length} guide(s)${repoUrl ? ` (repo: ${repoUrl})` : ''}${ratingsEnabled ? ', ratings on' : ''}`);
   return 0;
 }
 

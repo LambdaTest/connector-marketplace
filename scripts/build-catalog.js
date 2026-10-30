@@ -25,7 +25,8 @@ function buildCatalog(listings, taxonomy) {
       stage_groups: taxonomy.stageGroups,
       types: taxonomy.types,
       protocols: taxonomy.protocols,
-      badges: taxonomy.badges.map(({ id, label, description }) => ({ id, label, description })),
+      // verified_registry: only maintainers can grant it (pages show a shield for these).
+      badges: taxonomy.badges.map(({ id, label, description, verified_registry }) => ({ id, label, description, verified_registry: Boolean(verified_registry) })),
     },
     facets: {
       products: facet('products', taxonomy.ids.product),
