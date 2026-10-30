@@ -166,7 +166,10 @@ header.top { display: flex; flex-wrap: wrap; align-items: end; justify-content: 
 /* Drawer */
 .scrim { position: fixed; inset: 0; background: rgba(5,12,16,.45); z-index: 10; }
 .drawer { position: fixed; z-index: 11; top: 0; right: 0; bottom: 0; width: min(560px, 100%); background: var(--surface); border-left: 1px solid var(--line); box-shadow: var(--shadow); overflow-y: auto; padding: calc(20px + env(safe-area-inset-top, 0px)) 22px calc(28px + env(safe-area-inset-bottom, 0px)); display: grid; gap: 20px; align-content: start; }
+/* Grid items default to min-width: auto, so one long install command would widen the whole drawer. */
+.drawer > * { min-width: 0; }
 .drawer-head { display: flex; gap: 14px; align-items: center; }
+.drawer-head > div { min-width: 0; overflow-wrap: anywhere; }
 .drawer-head .logo { width: 56px; height: 56px; border-radius: 12px; }
 .drawer-head h2 { font: 800 22px/1.15 var(--f-display); margin: 0; }
 .drawer-head .vendor { color: var(--muted); font-size: 14px; }
@@ -180,7 +183,8 @@ header.top { display: flex; flex-wrap: wrap; align-items: end; justify-content: 
 .tab { background: none; border: 0; border-bottom: 2px solid transparent; padding: 8px 10px; font: 600 13px var(--f-body); color: var(--muted); cursor: pointer; }
 .tab.on { color: var(--fg); border-color: var(--accent); }
 .code { position: relative; background: var(--code-bg); color: var(--code-fg); border-radius: 10px; padding: 14px 14px 14px; overflow-x: auto; }
-.code pre { margin: 0; font: 12.5px/1.6 var(--f-mono); white-space: pre; padding-right: 64px; }
+/* Wrap long commands so no text runs under the Copy button; pre-wrap keeps JSON indentation. */
+.code pre { margin: 0; font: 12.5px/1.6 var(--f-mono); white-space: pre-wrap; overflow-wrap: anywhere; padding-right: 64px; }
 .copy { position: absolute; top: 8px; right: 8px; font: 600 12px var(--f-body); background: rgba(255,255,255,.1); color: var(--code-fg); border: 1px solid rgba(255,255,255,.18); border-radius: 6px; padding: 5px 9px; cursor: pointer; }
 .health { display: flex; gap: 10px; align-items: center; padding: 12px 14px; border-radius: 10px; background: var(--verified-soft); color: var(--verified); font-size: 14px; }
 .health.none { background: var(--sunken); color: var(--muted); }
@@ -387,21 +391,25 @@ function render() {
 
 function snippets(l) {
   const out = [];
-  if (l.install.url && !l.protocols.some(p => p === 'streamable-http' || p === 'sse')) {
-    out.push(['Install', `Install from:\n${l.install.url}`]);
-    return out;
-  }
-  if (l.install.url) {
+  const remoteMcp = l.install.url && l.protocols.some(p => p === 'streamable-http' || p === 'sse');
+  const localMcp = l.install.command && l.protocols.includes('stdio');
+  const env = l.install.env || [];
+  if (remoteMcp) {
     out.push(['Claude Code', `claude mcp add --transport http ${l.id} ${l.install.url}`]);
     out.push(['JSON config', JSON.stringify({ mcpServers: { [l.id]: { type: 'http', url: l.install.url } } }, null, 2)]);
   }
-  if (l.install.command) {
+  if (localMcp) {
     const [cmd, ...args] = l.install.command.split(' ');
-    const env = Object.fromEntries((l.install.env || []).map(e => [e.name, `<your ${e.name}>`]));
     const cfg = { command: cmd, args };
-    if (Object.keys(env).length) cfg.env = env;
-    out.push([l.install.url ? 'Local (stdio)' : 'Claude Code', `claude mcp add ${l.id} -- ${l.install.command}`]);
-    out.push([l.install.url ? 'Local JSON' : 'JSON config', JSON.stringify({ mcpServers: { [l.id]: cfg } }, null, 2)]);
+    if (env.length) cfg.env = Object.fromEntries(env.map(e => [e.name, `<your ${e.name}>`]));
+    out.push([remoteMcp ? 'Local (stdio)' : 'Claude Code', `claude mcp add ${l.id} -- ${l.install.command}`]);
+    out.push([remoteMcp ? 'Local JSON' : 'JSON config', JSON.stringify({ mcpServers: { [l.id]: cfg } }, null, 2)]);
+  }
+  // CLIs, plugins and integrations: show the command or install page as-is, not as an MCP server.
+  if (!remoteMcp && l.install.url) out.push(['Install', `Install from:\n${l.install.url}`]);
+  if (!localMcp && l.install.command) {
+    const exports = env.map(e => `export ${e.name}=<your ${e.name}>`);
+    out.push(['Command', [...exports, l.install.command].join('\n')]);
   }
   return out;
 }
@@ -488,7 +496,7 @@ function showDrawer(hash) {
   lastFocus = document.activeElement;
   history.replaceState(null, '', '#' + hash);
   document.getElementById('drawer').hidden = false; document.getElementById('scrim').hidden = false;
-  document.getElementById('close').focus();
+  document.getElementById('close').focus({ preventScroll: true });
 }
 function closeDrawer() {
   history.replaceState(null, '', location.pathname + location.search);
@@ -525,7 +533,9 @@ async function boot() {
     return;
   }
   CATALOG.taxonomy.stage_groups.forEach(g => g.values.forEach(v => stageInfo[v.id] = { ...v, group: g.id }));
-  const hc = HEALTH?.counts;
+  // Count only listings on the page: ones failing for 7+ days are left out of catalog.json.
+  const shownHealth = HEALTH ? CATALOG.listings.map(l => HEALTH.listings[l.id]).filter(Boolean) : [];
+  const hc = HEALTH && Object.fromEntries(['healthy', 'degraded', 'down'].map(s => [s, shownHealth.filter(h => h.status === s).length]));
   document.getElementById('status-line').textContent = `${CATALOG.count} connectors` +
     (hc ? ` · ${hc.healthy} healthy${hc.degraded ? `, ${hc.degraded} with a broken link` : ''}${hc.down ? `, ${hc.down} down` : ''} · checked ${ago(HEALTH.checked_at)}` : '');
   render();
