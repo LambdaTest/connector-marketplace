@@ -154,17 +154,14 @@ header.top { display: flex; flex-wrap: wrap; align-items: end; justify-content: 
 .review p { margin: 4px 0 0; overflow-wrap: anywhere; white-space: pre-line; }
 .empty-state { grid-column: 1 / -1; background: var(--surface); border: 1px dashed var(--line); border-radius: 14px; padding: 28px; text-align: center; color: var(--muted); }
 
-/* Add-your-connector band: two ordered steps, build then list */
-.band { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 20px; display: grid; gap: 14px; scroll-margin-top: 16px; }
-.band h2 { font: 700 20px var(--f-display); margin: 0; }
-.band > p { margin: -8px 0 0; color: var(--muted); }
-.band code { font: 13px var(--f-mono); color: var(--fg); }
+/* Add-your-connector drawer: two ordered steps, build then list */
 .steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; }
 .step { border: 1px solid var(--line); border-radius: 12px; padding: 16px; display: grid; gap: 8px; align-content: start; min-width: 0; }
 .step-n { font: 600 12px var(--f-mono); color: var(--accent); text-transform: uppercase; letter-spacing: .07em; }
 .step h3 { font: 700 17px var(--f-display); margin: 0; }
 .step p { margin: 0; color: var(--muted); font-size: 14px; }
 .step .btn { justify-self: start; margin-top: 4px; }
+.step code { font: 12.5px var(--f-mono); color: var(--fg); }
 
 /* Drawer */
 .scrim { position: fixed; inset: 0; background: rgba(5,12,16,.45); z-index: 10; }
@@ -209,7 +206,7 @@ header.top { display: flex; flex-wrap: wrap; align-items: end; justify-content: 
       <h1>Connector Marketplace</h1>
       <p>Connectors that work with our products: MCP servers, CLIs, plugins and integrations, sorted by where they help in the development and testing lifecycle.</p>
     </div>
-    <a class="btn primary" href="#list-yours">Add your connector</a>
+    <button class="btn primary" type="button" data-add>Add your connector</button>
   </header>
 
   <div class="search">
@@ -237,28 +234,31 @@ header.top { display: flex; flex-wrap: wrap; align-items: end; justify-content: 
 
   <main class="grid" id="grid" aria-live="polite"></main>
 
-  <section class="band" id="list-yours">
-    <h2>Add your connector</h2>
-    <p>Built something that works with one of our products? Two steps get it into the marketplace.</p>
-    <ol class="steps">
-      <li class="step">
-        <span class="step-n">Step 1</span>
-        <h3>Build it</h3>
-        <p>Connect your tool to our platform: REST APIs, the MCP server, the test grid or webhooks, and how to sign users in.</p>
-        <a class="btn" href="guides/building-a-connector.html">Developer guide</a>
-      </li>
-      <li class="step">
-        <span class="step-n">Step 2</span>
-        <h3>List it</h3>
-        <p>Add a <code>listings/&lt;id&gt;.yaml</code> file and a logo, and open a pull request. Checks run in about a minute, then our team reviews and merges it.</p>
-        <a class="btn" href="guides/contributing.html">Listing guide</a>
-      </li>
-    </ol>
-  </section>
 </div>
 
 <div class="scrim" id="scrim" hidden></div>
 <aside class="drawer" id="drawer" hidden role="dialog" aria-modal="true" aria-labelledby="d-name"></aside>
+<!-- Shown in the drawer by the "Add your connector" button, and when the page opens at #list-yours. -->
+<template id="add-connector">
+  <div class="drawer-head">
+    <div><h2 id="d-name">Add your connector</h2><div class="vendor">Built something that works with one of our products? Two steps get it into the marketplace.</div></div>
+    <button class="btn close" type="button" id="close" aria-label="Close">Close</button>
+  </div>
+  <ol class="steps">
+    <li class="step">
+      <span class="step-n">Step 1</span>
+      <h3>Build it</h3>
+      <p>Connect your tool to our platform: REST APIs, the MCP server, the test grid or webhooks, and how to sign users in.</p>
+      <a class="btn" href="guides/building-a-connector.html">Developer guide</a>
+    </li>
+    <li class="step">
+      <span class="step-n">Step 2</span>
+      <h3>List it</h3>
+      <p>Add a <code>listings/&lt;id&gt;.yaml</code> file and a logo, and open a pull request. Checks run in about a minute, then our team reviews and merges it.</p>
+      <a class="btn" href="guides/contributing.html">Listing guide</a>
+    </li>
+  </ol>
+</template>
 
 <script>
 let CATALOG = null;
@@ -376,7 +376,7 @@ function render() {
   const order = { official: 0, verified: 1, community: 2 };
   shown.sort((a, b) => (order[a.badge] ?? 9) - (order[b.badge] ?? 9) || a.name.localeCompare(b.name));
   document.getElementById('grid').innerHTML = shown.length ? shown.map(card).join('')
-    : `<div class="empty-state">No connectors match these filters yet. <button class="link-btn" type="button" id="reset">Clear all filters</button> or <a href="#list-yours" style="color:var(--accent)">request one</a>.</div>`;
+    : `<div class="empty-state">No connectors match these filters yet. <button class="link-btn" type="button" id="reset">Clear all filters</button> or ${REPO_URL ? `<a href="${esc(REPO_URL)}/issues/new?template=request-connector.yml" target="_blank" rel="noopener" style="color:var(--accent)">request one</a>` : '<button class="link-btn" type="button" data-add>add yours</button>'}.</div>`;
   document.getElementById('count').textContent = `${shown.length} of ${CATALOG.count} connectors`;
   renderLanes();
   renderChips('products', CATALOG.taxonomy.products, 'product', 'products');
@@ -475,10 +475,19 @@ function openDrawer(id) {
     catch { const r = document.createRange(); r.selectNodeContents(document.getElementById('snip')); const s = getSelection(); s.removeAllRanges(); s.addRange(r); e.target.textContent = 'Selected'; }
     setTimeout(() => e.target.textContent = 'Copy', 1500);
   };
+  showDrawer(l.id);
+}
+const ADD_HASH = 'list-yours';
+function openAddDrawer() {
+  const d = document.getElementById('drawer');
+  d.replaceChildren(document.getElementById('add-connector').content.cloneNode(true));
+  showDrawer(ADD_HASH);
+}
+function showDrawer(hash) {
   document.getElementById('close').onclick = closeDrawer;
   lastFocus = document.activeElement;
-  history.replaceState(null, '', '#' + l.id);
-  d.hidden = false; document.getElementById('scrim').hidden = false;
+  history.replaceState(null, '', '#' + hash);
+  document.getElementById('drawer').hidden = false; document.getElementById('scrim').hidden = false;
   document.getElementById('close').focus();
 }
 function closeDrawer() {
@@ -489,7 +498,7 @@ function closeDrawer() {
 
 document.getElementById('q').addEventListener('input', e => { state.q = e.target.value.trim().toLowerCase(); render(); });
 document.addEventListener('click', e => {
-  const t = e.target.closest('[data-stage],[data-product],[data-type],[data-badge],[data-rating],[data-id],#reset,#clear-stages');
+  const t = e.target.closest('[data-stage],[data-product],[data-type],[data-badge],[data-rating],[data-id],[data-add],#reset,#clear-stages');
   if (!t) return;
   if (t.dataset.stage) { state.stages.has(t.dataset.stage) ? state.stages.delete(t.dataset.stage) : state.stages.add(t.dataset.stage); render(); }
   else if (t.dataset.product) { state.product = state.product === t.dataset.product ? null : t.dataset.product; render(); }
@@ -497,6 +506,7 @@ document.addEventListener('click', e => {
   else if (t.dataset.badge) { state.badge = state.badge === t.dataset.badge ? null : t.dataset.badge; render(); }
   else if (t.dataset.rating) { const v = Number(t.dataset.rating); state.minRating = state.minRating === v ? null : v; render(); }
   else if (t.dataset.id) openDrawer(t.dataset.id);
+  else if ('add' in t.dataset) openAddDrawer();
   else if (t.id === 'clear-stages') { state.stages.clear(); render(); }
   else if (t.id === 'reset') { Object.assign(state, { q: '', product: null, type: null, badge: null, minRating: null }); state.stages.clear(); document.getElementById('q').value = ''; render(); }
 });
@@ -519,10 +529,14 @@ async function boot() {
   document.getElementById('status-line').textContent = `${CATALOG.count} connectors` +
     (hc ? ` · ${hc.healthy} healthy${hc.degraded ? `, ${hc.degraded} with a broken link` : ''}${hc.down ? `, ${hc.down} down` : ''} · checked ${ago(HEALTH.checked_at)}` : '');
   render();
+  openFromHash();
+  // Same-page links and edits to the URL's #part don't reload the page.
+  addEventListener('hashchange', openFromHash);
+}
+function openFromHash() {
   const id = decodeURIComponent(location.hash.slice(1));
-  if (id && CATALOG.listings.some(l => l.id === id)) openDrawer(id);
-  // The browser jumped to #section before the cards were drawn; jump again now that the layout is final.
-  else if (id) document.getElementById(id)?.scrollIntoView();
+  if (id === ADD_HASH) openAddDrawer();
+  else if (id && CATALOG.listings.some(l => l.id === id)) openDrawer(id);
 }
 boot();
 </script>
