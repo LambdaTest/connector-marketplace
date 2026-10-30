@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="Connectors that work with our products: MCP servers, CLIs, plugins and integrations.">
-<title>Connector Marketplace</title>
+<meta name="description" content="Connectors that work with TestMu AI: MCP servers, CLIs, plugins and integrations, sorted by where they help in the development and testing lifecycle.">
+<title>TestMu AI Connector Marketplace</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@500;600;700&family=Geist+Mono:wght@400;500&family=Manrope:wght@400;500;600;700&display=swap">
@@ -18,57 +18,66 @@ body { margin: 0; }
 img { max-width: 100%; }
 body { background: var(--bg); color: var(--fg); font: 15px/1.55 var(--f-body); }
 .wrap { max-width: 1180px; margin: 0 auto; padding-inline: 20px; padding-block: 28px 64px; display: grid; gap: 22px; }
-.status-line { display: inline-flex; align-items: center; gap: 8px; margin: 10px 0 0; font-size: 13px; color: var(--muted); }
+.brand .status-line { display: inline-flex; align-items: center; gap: 8px; margin: 18px 0 0; font-size: 13px; color: var(--muted); }
 .status-line .dot { width: 8px; height: 8px; color: var(--muted); }
 .status-line.healthy .dot { color: var(--verified); }
 .status-line.degraded .dot { color: var(--warn); }
 .status-line.down .dot { color: var(--down); }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
-header.top { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 16px; }
-.brand h1 { font: 600 clamp(28px, 4.4vw, 44px)/1.05 var(--f-display); letter-spacing: -.03em; margin: 0; text-wrap: balance; }
-.brand p { margin: 6px 0 0; color: var(--muted); max-width: 60ch; }
+/* Hero: spans the full page width; its content lines up with the column below. */
+.hero { background: var(--surface); border-bottom: 1px solid var(--line); }
+.hero-inner { max-width: 1180px; margin: 0 auto; padding: 56px 20px 44px; display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 24px; }
+.brand { max-width: 720px; }
+.brand h1 { font: 600 clamp(32px, 5.2vw, 56px)/1.04 var(--f-display); letter-spacing: -.035em; margin: 0; text-wrap: balance; }
+.brand p { margin: 14px 0 0; color: var(--muted); font-size: 17px; line-height: 1.55; max-width: 62ch; }
 .btn { font: 600 14px/1 var(--f-body); border-radius: var(--radius-sm); padding: 11px 16px; border: 1px solid var(--line); background: var(--surface); color: var(--fg); cursor: pointer; text-decoration: none; display: inline-flex; gap: 8px; align-items: center; }
 .btn.primary { background: var(--primary); border-color: var(--primary); color: var(--on-primary); }
 .btn.primary:hover { background: #2B2B2B; }
 .btn:not(.primary):hover { border-color: var(--line-strong); }
-.btn:focus-visible, .chip:focus-visible, .stop:focus-visible, .card:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-.search { position: relative; }
+.btn:focus-visible, .chip:focus-visible, .dd-btn:focus-visible, .card:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+/* Toolbar: search and the filter dropdowns on one row. */
+.toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: stretch; }
+.search { position: relative; flex: 1 1 320px; min-width: 0; }
 .search svg { position: absolute; left: 14px; top: 50%; translate: 0 -50%; width: 18px; height: 18px; color: var(--muted); pointer-events: none; }
 .search input { width: 100%; font: 15px var(--f-body); padding: 13px 44px; border-radius: var(--radius); border: 1px solid var(--line); background: var(--surface); color: var(--fg); }
 .search input:hover { border-color: var(--line-strong); }
 .search input::placeholder { color: var(--muted); }
 .search kbd { position: absolute; right: 12px; top: 50%; translate: 0 -50%; font: 500 12px var(--f-mono); color: var(--muted); border: 1px solid var(--line); border-radius: 6px; padding: 2px 7px; pointer-events: none; }
 .search input:focus + kbd, .search input:not(:placeholder-shown) + kbd { display: none; }
-.results-bar { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; font-size: 14px; color: var(--muted); margin-bottom: -8px; }
+.results-bar { display: flex; align-items: center; gap: 8px 12px; flex-wrap: wrap; font-size: 14px; color: var(--muted); margin-bottom: -8px; min-height: 30px; }
+.active-filters { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line); background: var(--surface); color: var(--fg); border-radius: var(--radius-sm); padding: 4px 8px 4px 10px; font: 500 13px var(--f-body); cursor: pointer; }
+.chip:hover { border-color: var(--line-strong); }
+.chip .x { color: var(--muted); font-size: 15px; line-height: 1; }
 .results-bar strong { color: var(--fg); font-weight: 600; font-variant-numeric: tabular-nums; }
 
-/* Lifecycle track */
-.track { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px 18px; display: grid; gap: 14px; }
-.track-head { display: flex; align-items: baseline; gap: 4px 12px; flex-wrap: wrap; }
-.track-head h2 { font: 700 13px var(--f-display); text-transform: uppercase; letter-spacing: .08em; margin: 0; color: var(--muted); }
-.track-head .hint { font-size: 13px; color: var(--muted); margin-right: auto; }
 .link-btn { background: none; border: 0; color: var(--accent); font: 600 13px var(--f-body); cursor: pointer; padding: 0; }
-/* Stages wrap onto more lines instead of scrolling sideways, so every stage stays visible. */
-.lanes { display: grid; gap: 12px; }
-.lane { display: grid; grid-template-columns: 56px minmax(0, 1fr); align-items: start; gap: 10px; }
-.lane + .lane { border-top: 1px solid var(--line); padding-top: 12px; }
-.lane-label { font: 700 12px var(--f-mono); letter-spacing: .06em; padding-top: 7px; }
-.lane[data-group="sdlc"] .lane-label { color: var(--sdlc); }
-.lane[data-group="stlc"] .lane-label { color: var(--stlc); }
-.stops { display: flex; flex-wrap: wrap; gap: 6px; }
-.stop { position: relative; z-index: 1; border: 1px solid var(--line); background: var(--surface); color: var(--fg); border-radius: var(--radius-sm); padding: 6px 10px; font: 500 12.5px/1.2 var(--f-body); display: flex; justify-content: space-between; align-items: center; gap: 6px; cursor: pointer; white-space: nowrap; }
-.stop .n { font: 500 11px var(--f-mono); color: var(--muted); font-variant-numeric: tabular-nums; }
-.stop.empty { color: var(--muted); border-style: dashed; }
-.stop:hover { border-color: var(--line-strong); }
-.lane[data-group="sdlc"] .stop.on { background: var(--sdlc); border-color: var(--sdlc); color: var(--on-accent); }
-.lane[data-group="stlc"] .stop.on { background: var(--stlc); border-color: var(--stlc); color: var(--on-accent); }
-.stop.on .n { color: inherit; opacity: .85; }
 
-.filters { display: flex; flex-wrap: wrap; gap: 18px; align-items: center; }
-.filter-group { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
-.filter-group > span { font: 600 12px var(--f-mono); color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-right: 4px; }
-.chip { border: 1px solid var(--line); background: transparent; color: var(--fg); border-radius: var(--radius-sm); padding: 5px 11px; font: 500 13px var(--f-body); cursor: pointer; }
-.chip.on { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+/* Filter dropdowns */
+.filters { display: flex; flex-wrap: wrap; gap: 8px; }
+.dd { position: relative; }
+.dd-btn { height: 100%; min-height: 48px; display: inline-flex; align-items: center; gap: 8px; padding: 0 12px 0 14px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); color: var(--fg); font: 500 14px var(--f-body); cursor: pointer; white-space: nowrap; }
+.dd-btn:hover { border-color: var(--line-strong); }
+.dd-btn[aria-expanded="true"], .dd-btn.active { border-color: var(--fg); }
+.dd-value { font-weight: 600; max-width: 14ch; overflow: hidden; text-overflow: ellipsis; margin-left: -4px; }
+.dd-value:empty { display: none; }
+.dd-count { min-width: 20px; height: 20px; padding: 0 6px; border-radius: 999px; background: var(--fg); color: var(--on-primary); font: 600 11px/20px var(--f-body); text-align: center; }
+.dd-btn svg { width: 14px; height: 14px; color: var(--muted); flex: none; transition: rotate .15s; }
+.dd-btn[aria-expanded="true"] svg { rotate: 180deg; }
+.dd-panel { position: absolute; z-index: 5; top: calc(100% + 6px); left: 0; min-width: 270px; max-height: min(440px, 70vh); overflow-y: auto; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); padding: 6px; }
+.dd-panel.align-right { left: auto; right: 0; }
+.dd-panel fieldset { border: 0; margin: 0; padding: 2px 0 4px; min-width: 0; }
+.dd-panel fieldset + fieldset { border-top: 1px solid var(--line); padding-top: 6px; }
+.dd-panel legend { font: 500 12px var(--f-body); color: var(--muted); padding: 6px 10px 4px; white-space: nowrap; }
+.dd-panel legend b { font: 700 11px var(--f-mono); letter-spacing: .06em; margin-right: 6px; }
+.dd-panel legend.sdlc b { color: var(--sdlc); }
+.dd-panel legend.stlc b { color: var(--stlc); }
+.dd-opt { display: flex; align-items: center; gap: 10px; padding: 7px 10px; border-radius: var(--radius-sm); cursor: pointer; font-size: 14px; }
+.dd-opt:hover { background: var(--sunken); }
+.dd-opt input { margin: 0; accent-color: var(--fg); width: 15px; height: 15px; flex: none; }
+.dd-opt .n { margin-left: auto; padding-left: 12px; font: 500 12px var(--f-mono); color: var(--muted); font-variant-numeric: tabular-nums; }
+.dd-opt.empty { color: var(--muted); }
+.dd-foot { display: flex; justify-content: flex-end; border-top: 1px solid var(--line); margin-top: 4px; padding: 8px 10px 4px; }
 
 /* Grid */
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; }
@@ -128,8 +137,11 @@ header.top { display: flex; flex-wrap: wrap; align-items: end; justify-content: 
 .dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; flex: none; }
 
 @media (max-width: 640px) {
-  .lane { grid-template-columns: minmax(0, 1fr); gap: 6px; }
-  .lane-label { padding-top: 0; }
+  .hero-inner { padding: 36px 20px 28px; }
+  .search { flex-basis: 100%; }
+  .filters { display: grid; grid-template-columns: 1fr 1fr; width: 100%; }
+  .dd-btn { width: 100%; justify-content: space-between; }
+  .dd-value { max-width: 9ch; }
   .search kbd { display: none; }
   .drawer { top: auto; height: 88%; width: 100%; border-left: 0; border-top: 1px solid var(--line); border-radius: 16px 16px 0 0; }
 }
@@ -138,42 +150,30 @@ header.top { display: flex; flex-wrap: wrap; align-items: end; justify-content: 
 </head>
 <body>
 
-<div class="wrap">
-  <header class="top">
+<header class="hero">
+  <div class="hero-inner">
     <div class="brand">
-      <h1>Connector Marketplace</h1>
-      <p>Connectors that work with our products: MCP servers, CLIs, plugins and integrations, sorted by where they help in the development and testing lifecycle.</p>
+      <h1>TestMu AI Connector Marketplace</h1>
+      <p>Connectors that work with TestMu AI: MCP servers, CLIs, plugins and integrations, sorted by where they help in the development and testing lifecycle.</p>
       <p class="status-line" id="status-line" role="status"><span class="dot"></span><span>Loading catalog…</span></p>
     </div>
     <button class="btn primary" type="button" data-add>Add your connector</button>
-  </header>
-
-  <div class="search">
-    <label for="q" class="sr-only">Search connectors</label>
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-    <input id="q" type="search" placeholder="Search by name, vendor or what it does" autocomplete="off">
-    <kbd id="search-key" aria-hidden="true">⌘K</kbd>
   </div>
+</header>
 
-  <section class="track" aria-label="Filter by lifecycle stage">
-    <div class="track-head">
-      <h2>Lifecycle stage</h2>
-      <span class="hint">Pick one or more stages to filter</span>
-      <button class="link-btn" id="clear-stages" type="button" hidden>Clear stages</button>
+<div class="wrap">
+
+  <div class="toolbar" role="search">
+    <div class="search">
+      <label for="q" class="sr-only">Search connectors</label>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input id="q" type="search" placeholder="Search by name, vendor or what it does" autocomplete="off">
+      <kbd id="search-key" aria-hidden="true">⌘K</kbd>
     </div>
-    <div class="lanes" id="lanes"></div>
-  </section>
-
-  <div class="filters">
-    <div class="filter-group" id="products"><span>Works with</span></div>
-  </div>
-  <div class="filters">
-    <div class="filter-group" id="types"><span>Type</span></div>
-    <div class="filter-group" id="badges"><span>Trust</span></div>
-    <div class="filter-group" id="ratings" hidden><span>Rating</span></div>
+    <div class="filters" id="filters"></div>
   </div>
 
-  <div class="results-bar"><span id="count" aria-live="polite"></span><button class="link-btn" type="button" data-reset hidden>Clear all filters</button></div>
+  <div class="results-bar"><span id="count" aria-live="polite"></span><span class="active-filters" id="active-filters"></span><button class="link-btn" type="button" data-reset hidden>Clear all filters</button></div>
   <main class="grid" id="grid"></main>
 
 </div>
@@ -256,28 +256,98 @@ function matches(l, skip) {
   return true;
 }
 
-function renderLanes() {
-  const pool = CATALOG.listings.filter(l => matches(l, 'stages'));
-  document.getElementById('lanes').innerHTML = CATALOG.taxonomy.stage_groups.map(g => `
-    <div class="lane" data-group="${g.id}">
-      <div class="lane-label" title="${esc(g.label)}">${g.id.toUpperCase()}</div>
-      <div class="stops">${g.values.map(v => {
-        const n = pool.filter(l => l.stages.includes(v.id)).length;
-        return `<button type="button" class="stop ${state.stages.has(v.id) ? 'on' : ''} ${n ? '' : 'empty'}" data-stage="${v.id}" aria-pressed="${state.stages.has(v.id)}">${esc(v.label)}<span class="n">${n}</span></button>`;
-      }).join('')}</div>
-    </div>`).join('');
-  document.getElementById('clear-stages').hidden = !state.stages.size;
+// Filter dropdowns. Built once at boot; render() only updates checks, counts and labels,
+// so an open dropdown keeps its focus while the grid updates.
+// key: the state field; skip: the matches() argument that ignores this filter when counting.
+const CHEVRON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>';
+function filterDefs() {
+  const t = CATALOG.taxonomy;
+  const used = (field) => (x) => CATALOG.listings.some(l => [].concat(l[field]).includes(x.id));
+  const defs = [
+    { key: 'stages', skip: 'stages', label: 'Lifecycle stage', multi: true, field: 'stages',
+      groups: t.stage_groups.map(g => ({ id: g.id, label: g.label, items: g.values })) },
+    { key: 'product', skip: 'product', label: 'Works with', field: 'products', groups: [{ items: t.products.filter(used('products')) }] },
+    { key: 'type', skip: 'type', label: 'Type', field: 'type', groups: [{ items: t.types.filter(used('type')) }] },
+    { key: 'badge', skip: 'badge', label: 'Trust', field: 'badge', groups: [{ items: t.badges.filter(used('badge')) }] },
+  ];
+  if (CATALOG.listings.some(l => ratingOf(l))) {
+    defs.push({ key: 'minRating', skip: 'rating', label: 'Rating', rating: true,
+      groups: [{ items: RATING_STEPS.map(min => ({ id: String(min), label: `${min}★ & up` })) }] });
+  }
+  return defs;
 }
-
-function renderChips(id, list, key, field) {
-  const el = document.getElementById(id);
-  const pool = CATALOG.listings.filter(l => matches(l, key));
-  const has = (l, id) => [].concat(l[field]).includes(id);
-  const items = list.filter(x => CATALOG.listings.some(l => has(l, x.id)));
-  el.innerHTML = el.firstElementChild.outerHTML + items.map(x => {
-    const n = pool.filter(l => has(l, x.id)).length;
-    return `<button type="button" class="chip ${state[key] === x.id ? 'on' : ''}" data-${key}="${x.id}" aria-pressed="${state[key] === x.id}">${esc(x.label)} · ${n}</button>`;
+let FILTERS = [];
+function buildFilters() {
+  FILTERS = filterDefs();
+  document.getElementById('filters').innerHTML = FILTERS.map(f => {
+    const opt = (x) => `<label class="dd-opt"><input type="${f.multi ? 'checkbox' : 'radio'}" name="${f.key}" value="${esc(x.id)}"><span>${esc(x.label)}</span><span class="n"></span></label>`;
+    const groups = f.groups.map(g => g.label
+      ? `<fieldset><legend class="${g.id}"><b>${esc(g.id.toUpperCase())}</b>${esc(g.label)}</legend>${g.items.map(opt).join('')}</fieldset>`
+      : `<fieldset>${f.multi ? '' : `<label class="dd-opt"><input type="radio" name="${f.key}" value=""><span>Any</span></label>`}${g.items.map(opt).join('')}</fieldset>`).join('');
+    return `<div class="dd" data-key="${f.key}">
+      <button class="dd-btn" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="dd-${f.key}"><span class="dd-label">${esc(f.label)}</span><span class="dd-value"></span>${CHEVRON}</button>
+      <div class="dd-panel" id="dd-${f.key}" role="group" aria-label="${esc(f.label)}" hidden>${groups}
+        ${f.multi ? `<div class="dd-foot"><button class="link-btn" type="button" data-clear="${f.key}">Clear</button></div>` : ''}
+      </div>
+    </div>`;
   }).join('');
+}
+function selected(f) {
+  if (f.multi) return [...state[f.key]];
+  return state[f.key] == null ? [] : [String(state[f.key])];
+}
+function optionLabel(f, id) {
+  for (const g of f.groups) { const x = g.items.find(i => String(i.id) === id); if (x) return x.label; }
+  return id;
+}
+function updateFilters() {
+  for (const f of FILTERS) {
+    const pool = CATALOG.listings.filter(l => matches(l, f.skip));
+    const dd = document.querySelector(`.dd[data-key="${f.key}"]`);
+    const sel = selected(f);
+    dd.querySelectorAll('input').forEach(input => {
+      input.checked = input.value === '' ? sel.length === 0 : sel.includes(input.value);
+      if (!input.value) return;
+      const n = f.rating
+        ? pool.filter(l => (ratingOf(l)?.average || 0) >= Number(input.value)).length
+        : pool.filter(l => [].concat(l[f.field]).includes(input.value)).length;
+      const row = input.closest('.dd-opt');
+      row.querySelector('.n').textContent = n;
+      row.classList.toggle('empty', n === 0);
+    });
+    const btn = dd.querySelector('.dd-btn');
+    btn.classList.toggle('active', sel.length > 0);
+    // Single choice reads "Works with: SmartUI"; multi-select shows a count badge.
+    dd.querySelector('.dd-label').textContent = sel.length && !f.multi ? `${f.label}:` : f.label;
+    dd.querySelector('.dd-value').innerHTML = !sel.length ? ''
+      : f.multi ? `<span class="dd-count">${sel.length}</span>` : esc(optionLabel(f, sel[0]));
+    btn.setAttribute('aria-label', `${f.label}${sel.length ? `, ${sel.length} selected` : ''}`);
+  }
+  // Selections are hidden once a dropdown closes, so list them as removable chips.
+  document.getElementById('active-filters').innerHTML = FILTERS.flatMap(f => selected(f).map(id =>
+    `<button class="chip" type="button" data-remove="${f.key}" data-value="${esc(id)}" aria-label="Remove filter ${esc(optionLabel(f, id))}">${esc(optionLabel(f, id))}<span class="x" aria-hidden="true">×</span></button>`)).join('');
+}
+function setFilter(key, value, on) {
+  const f = FILTERS.find(x => x.key === key);
+  if (f.multi) on ? state[key].add(value) : state[key].delete(value);
+  else state[key] = !on || value === '' ? null : f.rating ? Number(value) : value;
+  render();
+}
+function openDropdown(dd) {
+  closeDropdowns(dd);
+  const btn = dd.querySelector('.dd-btn'), panel = dd.querySelector('.dd-panel');
+  btn.setAttribute('aria-expanded', 'true');
+  panel.hidden = false;
+  panel.classList.remove('align-right');
+  if (panel.getBoundingClientRect().right > innerWidth - 8) panel.classList.add('align-right');
+  (panel.querySelector('input:checked') || panel.querySelector('input'))?.focus();
+}
+function closeDropdowns(except) {
+  document.querySelectorAll('.dd').forEach(dd => {
+    if (dd === except) return;
+    dd.querySelector('.dd-btn').setAttribute('aria-expanded', 'false');
+    dd.querySelector('.dd-panel').hidden = true;
+  });
 }
 
 function card(l) {
@@ -296,20 +366,6 @@ function card(l) {
   </a>`;
 }
 
-function renderRatingChips() {
-  const el = document.getElementById('ratings');
-  const rated = CATALOG.listings.filter(l => ratingOf(l));
-  // Hide the filter until at least one connector has a rating.
-  el.hidden = rated.length === 0;
-  if (el.hidden) return;
-  const pool = CATALOG.listings.filter(l => matches(l, 'rating'));
-  el.innerHTML = el.firstElementChild.outerHTML + RATING_STEPS.map(min => {
-    const n = pool.filter(l => (ratingOf(l)?.average || 0) >= min).length;
-    const on = state.minRating === min;
-    return `<button type="button" class="chip ${on ? 'on' : ''}" data-rating="${min}" aria-pressed="${on}" aria-label="Rated ${min} stars or more">${min}★ &amp; up · ${n}</button>`;
-  }).join('');
-}
-
 function render() {
   const shown = CATALOG.listings.filter(l => matches(l));
   const order = { official: 0, verified: 1, community: 2 };
@@ -321,11 +377,7 @@ function render() {
     ? `<strong>${shown.length}</strong> of ${CATALOG.count} connectors`
     : `<strong>${CATALOG.count}</strong> connectors`;
   document.querySelector('.results-bar [data-reset]').hidden = !filtered;
-  renderLanes();
-  renderChips('products', CATALOG.taxonomy.products, 'product', 'products');
-  renderChips('types', CATALOG.taxonomy.types, 'type', 'type');
-  renderChips('badges', CATALOG.taxonomy.badges, 'badge', 'badge');
-  renderRatingChips();
+  updateFilters();
 }
 
 let lastFocus = null;
@@ -350,27 +402,30 @@ function closeDrawer() {
 
 document.getElementById('q').addEventListener('input', e => { state.q = e.target.value.trim().toLowerCase(); render(); });
 document.addEventListener('click', e => {
-  const t = e.target.closest('[data-stage],[data-product],[data-type],[data-badge],[data-rating],[data-add],[data-reset],#clear-stages');
+  // A click outside any dropdown closes the open one.
+  if (!e.target.closest('.dd')) closeDropdowns();
+  const t = e.target.closest('.dd-btn,[data-clear],[data-remove],[data-add],[data-reset]');
   if (!t) return;
-  if (t.dataset.stage) { state.stages.has(t.dataset.stage) ? state.stages.delete(t.dataset.stage) : state.stages.add(t.dataset.stage); render(); }
-  else if (t.dataset.product) { state.product = state.product === t.dataset.product ? null : t.dataset.product; render(); }
-  else if (t.dataset.type) { state.type = state.type === t.dataset.type ? null : t.dataset.type; render(); }
-  else if (t.dataset.badge) { state.badge = state.badge === t.dataset.badge ? null : t.dataset.badge; render(); }
-  else if (t.dataset.rating) { const v = Number(t.dataset.rating); state.minRating = state.minRating === v ? null : v; render(); }
+  if (t.classList.contains('dd-btn')) { const dd = t.closest('.dd'); t.getAttribute('aria-expanded') === 'true' ? closeDropdowns() : openDropdown(dd); }
+  else if (t.dataset.clear) { state[t.dataset.clear].clear(); render(); }
+  else if (t.dataset.remove) setFilter(t.dataset.remove, t.dataset.value, false);
   else if ('add' in t.dataset) openAddDrawer();
-  else if (t.id === 'clear-stages') { state.stages.clear(); render(); }
   else if ('reset' in t.dataset) { Object.assign(state, { q: '', product: null, type: null, badge: null, minRating: null }); state.stages.clear(); document.getElementById('q').value = ''; render(); }
 });
 document.getElementById('scrim').onclick = closeDrawer;
+document.getElementById('filters').addEventListener('change', e => setFilter(e.target.name, e.target.value, e.target.checked));
 // userAgentData reports "macOS", navigator.platform "MacIntel": match either.
 const IS_MAC = /mac|iphone|ipad/i.test(navigator.userAgentData?.platform || navigator.platform);
 if (!IS_MAC) document.getElementById('search-key').textContent = 'Ctrl K';
 document.addEventListener('keydown', e => {
-  if (e.key === 'Escape' && !document.getElementById('drawer').hidden) closeDrawer();
+  const openDd = document.querySelector('.dd-btn[aria-expanded="true"]');
+  if (e.key === 'Escape' && openDd) { closeDropdowns(); openDd.focus(); }
+  else if (e.key === 'Escape' && !document.getElementById('drawer').hidden) closeDrawer();
   // ⌘K (Ctrl+K off macOS) jumps to search from anywhere on the page.
   else if (e.key.toLowerCase() === 'k' && (IS_MAC ? e.metaKey : e.ctrlKey) && !e.altKey && !e.shiftKey) {
     e.preventDefault();
     if (!document.getElementById('drawer').hidden) closeDrawer();
+    closeDropdowns();
     const q = document.getElementById('q');
     q.focus(); q.select();
   }
@@ -403,6 +458,7 @@ async function boot() {
   } else {
     line.lastElementChild.textContent = 'Health checks run every 6 hours';
   }
+  buildFilters();
   const params = new URLSearchParams(location.search);
   for (const key of ['product', 'type', 'badge']) if (params.get(key)) state[key] = params.get(key);
   params.getAll('stage').forEach(s => state.stages.add(s));

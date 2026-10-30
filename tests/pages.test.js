@@ -30,7 +30,7 @@ test('every connector page has a breadcrumb: marketplace › type › name', () 
     assert.deepEqual([crumbs[0][1], crumbs[0][2]], ['../../', 'Connector Marketplace']);
     assert.equal(crumbs[1][1], `../../?type=${l.type}`);
     assert.equal(crumbs[2][3], l.name.replace(/&/g, '&amp;'));
-    assert.ok(html.includes(`<title>${l.name.replace(/&/g, '&amp;')} · Connector Marketplace</title>`));
+    assert.ok(html.includes(`<title>${l.name.replace(/&/g, '&amp;')} · TestMu AI Connector Marketplace</title>`));
   }
 });
 
