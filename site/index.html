@@ -243,7 +243,10 @@ header.top { display: flex; flex-wrap: wrap; align-items: end; justify-content: 
         <li>Open a PR. After it merges, ask for the Verified badge</li>
       </ol>
     </div>
-    <a class="btn" id="contrib-link" href="#list-yours">Read the contributing guide</a>
+    <div style="display:grid;gap:8px">
+      <a class="btn" href="guides/contributing.html">Read the contributing guide</a>
+      <a class="btn" href="guides/building-a-connector.html">Building a connector</a>
+    </div>
   </section>
 </div>
 
@@ -508,11 +511,6 @@ async function boot() {
   const hc = HEALTH?.counts;
   document.getElementById('status-line').textContent = `${CATALOG.count} connectors` +
     (hc ? ` · ${hc.healthy} healthy${hc.degraded ? `, ${hc.degraded} with a broken link` : ''}${hc.down ? `, ${hc.down} down` : ''} · checked ${ago(HEALTH.checked_at)}` : '');
-  if (REPO_URL) {
-    const c = document.getElementById('contrib-link');
-    c.href = REPO_URL + '/blob/main/CONTRIBUTING.md';
-    c.target = '_blank';
-  }
   render();
   const id = decodeURIComponent(location.hash.slice(1));
   if (id && CATALOG.listings.some(l => l.id === id)) openDrawer(id);
