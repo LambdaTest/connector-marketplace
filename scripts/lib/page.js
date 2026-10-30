@@ -26,7 +26,7 @@ function shell({ title, description, root, crumbs, pager = '', body, css = '', s
 <title>${esc(title)} · Connector Marketplace</title>
 ${description ? `<meta name="description" content="${esc(description)}">\n` : ''}<link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@700;800&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@500;600;700&family=Geist+Mono:wght@400;500&family=Manrope:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" href="${root}assets/base.css">
 ${css ? `<style>\n${css}\n</style>\n` : ''}</head>
 <body>

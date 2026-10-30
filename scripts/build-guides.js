@@ -57,15 +57,15 @@ function renderGuide(guide, repoUrl) {
 }
 
 const GUIDE_CSS = `
-h1 { font: 800 clamp(28px, 4vw, 38px)/1.1 var(--f-display); letter-spacing: -.02em; margin: 0 0 14px; }
+h1 { font: 600 clamp(28px, 4.4vw, 44px)/1.08 var(--f-display); letter-spacing: -.03em; margin: 0 0 14px; }
 .toc { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 8px; }
-.toc a { font-size: 12.5px; color: var(--fg); text-decoration: none; border: 1px solid var(--line); border-radius: 999px; padding: 4px 10px; }
-.toc a:hover { border-color: var(--accent); color: var(--accent); }
-article h2 { font: 700 21px/1.25 var(--f-display); margin: 32px 0 8px; padding-top: 18px; border-top: 1px solid var(--line); scroll-margin-top: 12px; }
-article h3 { font: 700 16px var(--f-display); margin: 22px 0 6px; scroll-margin-top: 12px; }
+.toc a { font-size: 12.5px; color: var(--fg); text-decoration: none; border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 4px 10px; background: var(--surface); }
+.toc a:hover { border-color: var(--line-strong); }
+article h2 { font: 600 22px/1.25 var(--f-display); letter-spacing: -.02em; margin: 32px 0 8px; padding-top: 18px; border-top: 1px solid var(--line); scroll-margin-top: 12px; }
+article h3 { font: 600 17px var(--f-display); letter-spacing: -.01em; margin: 22px 0 6px; scroll-margin-top: 12px; }
 article p, article li { max-width: 75ch; }
 article code { font: 12.5px var(--f-mono); background: var(--sunken); padding: 1px 5px; border-radius: 5px; overflow-wrap: anywhere; }
-article pre { background: var(--code-bg); color: var(--code-fg); border-radius: 10px; padding: 14px; overflow-x: auto; }
+article pre { background: var(--code-bg); color: var(--code-fg); border-radius: var(--radius); padding: 14px; overflow-x: auto; }
 article pre code { background: none; padding: 0; color: inherit; overflow-wrap: normal; }
 article table { border-collapse: collapse; width: 100%; font-size: 13.5px; display: block; overflow-x: auto; }
 article th, article td { text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }

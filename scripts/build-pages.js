@@ -15,7 +15,7 @@ const SHIELD = '<svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
 const CSS = `
 .hero { display: grid; grid-template-columns: auto 1fr; gap: 6px 18px; align-items: center; margin-bottom: 8px; }
 .hero .logo { width: 72px; height: 72px; border-radius: 16px; grid-row: span 2; }
-.hero h1 { font: 800 clamp(26px, 4vw, 38px)/1.1 var(--f-display); letter-spacing: -.02em; margin: 0; overflow-wrap: anywhere; }
+.hero h1 { font: 600 clamp(28px, 4.4vw, 44px)/1.08 var(--f-display); letter-spacing: -.03em; margin: 0; overflow-wrap: anywhere; }
 .hero .by { color: var(--muted); display: flex; align-items: center; gap: 8px; min-width: 0; }
 .vendor-logo { width: 20px; height: 20px; border-radius: 5px; flex: none; object-fit: contain; background: #fff; }
 .kv .vendor-logo { width: 16px; height: 16px; border-radius: 4px; vertical-align: -3px; margin-right: 6px; }
@@ -23,7 +23,7 @@ const CSS = `
 .actions { display: flex; flex-wrap: wrap; gap: 10px; margin: 18px 0 8px; }
 .layout { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 28px; margin-top: 28px; align-items: start; }
 .layout > * { min-width: 0; display: grid; gap: 28px; }
-.layout aside { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 18px; gap: 22px; }
+.layout aside { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px; gap: 22px; }
 .works { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-bottom: 10px; }
 .works .arrow { color: var(--muted); }
 @media (max-width: 860px) { .layout { grid-template-columns: minmax(0, 1fr); } }
