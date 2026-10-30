@@ -1,0 +1,141 @@
+# Single source of truth for every category a listing can use.
+# The schema, validator, catalog build and docs all read from this file.
+# To add a category: add an entry here and open a PR. Nothing else needs to change.
+
+version: 1
+
+# Software / Software-Testing Life Cycle stages. A listing picks one or more.
+stages:
+  sdlc:
+    label: Software Development Life Cycle
+    values:
+      - id: planning
+        label: Planning
+      - id: requirements
+        label: Requirements
+      - id: design
+        label: Design
+      - id: development
+        label: Development
+      - id: code-review
+        label: Code Review
+      - id: build
+        label: Build & CI
+      - id: deployment
+        label: Deployment & Release
+      - id: monitoring
+        label: Monitoring & Operations
+      - id: maintenance
+        label: Maintenance
+  stlc:
+    label: Software Testing Life Cycle
+    values:
+      - id: test-planning
+        label: Test Planning
+      - id: test-design
+        label: Test Case Design
+      - id: test-environment
+        label: Test Environment Setup
+      - id: test-execution
+        label: Test Execution
+      - id: defect-triage
+        label: Defect Reporting & Triage
+      - id: test-reporting
+        label: Test Reporting & Analytics
+      - id: test-closure
+        label: Test Closure
+
+# Our products. Every listing must connect to at least one of these;
+# connectors that don't work with any of our products are not accepted.
+# Ids are permanent once listings use them; labels can change.
+products:
+  - id: automation-cloud
+    label: Web Automation Cloud
+  - id: real-device-cloud
+    label: Real Device Cloud
+  - id: hyperexecute
+    label: HyperExecute
+  - id: smartui
+    label: SmartUI
+  - id: kaneai
+    label: KaneAI
+  - id: test-manager
+    label: Test Manager
+  - id: accessibility
+    label: Accessibility Testing
+  - id: test-analytics
+    label: Test Analytics
+  - id: agent-testing
+    label: Agent Testing
+  - id: agent-assurance
+    label: Agent Assurance
+  - id: browser-cloud
+    label: Browser Cloud
+
+# What kind of connector this is.
+types:
+  - id: mcp-server
+    label: MCP Server
+  - id: agent-skill
+    label: Agent Skill
+  - id: plugin
+    label: Plugin
+  - id: api-integration
+    label: API Integration
+  - id: webhook
+    label: Webhook
+  - id: cli
+    label: CLI Tool
+  - id: agent
+    label: AI Agent
+
+# How a client talks to it.
+# `install_requires` names the install field a listing must fill to use this protocol.
+# `health_probe` replaces the plain GET on health_url with a protocol check:
+#   mcp-tools-list  MCP initialize + tools/list without credentials, as registries do
+#   a2a-agent-card  health_url is an A2A agent card with the required fields
+protocols:
+  - id: streamable-http
+    label: Streamable HTTP (MCP)
+    install_requires: url
+    health_probe: mcp-tools-list
+  - id: sse
+    label: Server-Sent Events (MCP, legacy)
+    install_requires: url
+  - id: stdio
+    label: stdio (MCP, local)
+    install_requires: command
+  - id: rest
+    label: REST
+  - id: graphql
+    label: GraphQL
+  - id: grpc
+    label: gRPC
+  - id: webhook
+    label: Webhook
+  - id: a2a
+    label: A2A (Agent2Agent)
+    install_requires: url
+    health_probe: a2a-agent-card
+
+# Trust level shown on the listing card.
+# `requires` lists extra listing fields that must be present for that badge.
+# `requires_if_remote` applies only to remote connectors (listings with install.url).
+# `verified_registry: true` means the listing id must also appear in VERIFIED.md.
+badges:
+  - id: community
+    label: Community
+    description: Submitted by a partner or the community. Schema-checked only.
+    requires: []
+  - id: verified
+    label: Verified
+    description: Tested by us, healthy endpoint, docs and support contact confirmed.
+    requires: []
+    requires_if_remote: [health_url]
+    verified_registry: true
+  - id: official
+    label: Official
+    description: Built and maintained by us.
+    requires: []
+    requires_if_remote: [health_url]
+    verified_registry: true

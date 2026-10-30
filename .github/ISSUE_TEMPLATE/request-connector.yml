@@ -1,0 +1,52 @@
+name: Request a connector
+description: Ask for a tool or service to be added to the marketplace.
+title: "[Request] "
+labels: ["connector-request"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks! If you build the connector yourself, you can list it directly with a PR. See CONTRIBUTING.md.
+  - type: input
+    id: tool
+    attributes:
+      label: Tool or service
+      description: What should we connect to?
+      placeholder: e.g. Acme Test Manager
+    validations:
+      required: true
+  - type: input
+    id: url
+    attributes:
+      label: Link
+      description: Website, docs, or an existing MCP server / API.
+      placeholder: https://
+  - type: input
+    id: products
+    attributes:
+      label: Which of our products should it work with?
+      description: We only list connectors that work with our products. Use ids from taxonomy.yaml if you know them.
+      placeholder: e.g. hyperexecute, smartui
+    validations:
+      required: true
+  - type: input
+    id: stage
+    attributes:
+      label: Where does it fit?
+      description: Which SDLC or STLC stage(s)? Use ids from taxonomy.yaml if you know them, or describe it in your own words.
+      placeholder: e.g. test-execution, defect-triage
+  - type: textarea
+    id: use-case
+    attributes:
+      label: What would you use it for?
+      description: A real task you want an agent to do with it.
+    validations:
+      required: true
+  - type: dropdown
+    id: vendor
+    attributes:
+      label: Are you the vendor?
+      options:
+        - "No"
+        - "Yes, and we'd like to build it"
+        - "Yes, but we'd like help building it"

@@ -1,0 +1,44 @@
+# EXAMPLE PARTNER LISTING (fictional vendor). A GitHub Action from a CI tooling company.
+id: tailspin-github-action
+name: Visual Check Action
+summary: A GitHub Action that runs HyperExecute jobs on every pull request and posts SmartUI visual diffs as a PR check.
+vendor:
+  name: Tailspin
+  url: https://tailspin.example
+products:
+  - hyperexecute
+  - smartui
+integration:
+  platform: GitHub
+  summary: Starts a HyperExecute job for each pull request, uploads screenshots to SmartUI, and reports the visual diff as a pass/fail check with a link to approve changes.
+  docs_url: https://tailspin.example/visual-check/setup
+  capabilities:
+    - Run the test suite on HyperExecute for each pull request
+    - Post SmartUI visual diffs as a PR check
+    - Approve intended visual changes from the PR
+    - Cache dependencies between runs
+type: plugin
+stages:
+  - code-review
+  - build
+  - test-execution
+protocols:
+  - rest
+install:
+  url: https://tailspin.example/visual-check
+  auth: api-key
+  env:
+    - name: LT_ACCESS_KEY
+      description: Your access key, stored as a repository secret.
+      required: true
+      secret: true
+    - name: PROJECT_TOKEN
+      description: SmartUI project token, stored as a repository secret.
+      required: true
+      secret: true
+docs_url: https://tailspin.example/visual-check
+privacy_url: https://tailspin.example/privacy
+support:
+  url: https://tailspin.example/support
+logo: logos/tailspin-github-action.svg
+badge: community

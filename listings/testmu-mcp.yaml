@@ -1,0 +1,43 @@
+id: testmu-mcp
+name: TestMu AI MCP Server
+summary: Run, debug and triage tests from your AI assistant across HyperExecute, SmartUI, Test Manager and more.
+vendor:
+  name: TestMu AI
+  url: https://www.testmuai.com
+  github: LambdaTest
+products:
+  - hyperexecute
+  - automation-cloud
+  - real-device-cloud
+  - smartui
+  - accessibility
+  - test-manager
+integration:
+  summary: Generates HyperExecute YAML and monitors jobs, triages web and native app test failures, summarizes SmartUI visual diffs, runs accessibility checks and manages Test Manager cases and runs from any MCP client.
+  docs_url: https://www.testmuai.com/support/docs/testmu-mcp-server/
+  capabilities:
+    - Generate HyperExecute YAML and monitor jobs
+    - Triage failed web and native app tests with logs
+    - Summarize SmartUI visual differences
+    - Run accessibility checks on a URL or local React app
+    - Create Test Manager test cases and runs, and record results
+type: mcp-server
+stages:
+  - build
+  - test-design
+  - test-execution
+  - defect-triage
+  - test-reporting
+protocols:
+  - streamable-http
+install:
+  url: https://mcp.lambdatest.com/mcp
+  registry_name: io.github.LambdaTest/mcp
+  auth: oauth
+docs_url: https://www.testmuai.com/support/docs/testmu-mcp-server/
+privacy_url: https://www.testmuai.com/legal/privacy/
+support:
+  url: https://www.testmuai.com/support/
+logo: logos/testmu-mcp.svg
+badge: official
+health_url: https://mcp.lambdatest.com/mcp

@@ -1,0 +1,41 @@
+name: Report a broken listing
+description: A connector doesn't install, its endpoint is down, or its details are wrong.
+title: "[Broken] "
+labels: ["broken-listing"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Do not paste API keys, tokens, or private logs here.** This issue is public.
+  - type: input
+    id: listing
+    attributes:
+      label: Listing id
+      description: The file name in listings/, without .yaml
+      placeholder: e.g. acme-mcp
+    validations:
+      required: true
+  - type: checkboxes
+    id: what
+    attributes:
+      label: What's wrong?
+      options:
+        - label: Install fails
+        - label: Endpoint is down or times out
+        - label: Docs, privacy, or support link is broken
+        - label: Support contact doesn't respond
+        - label: Listing details are wrong or out of date
+        - label: Security or privacy concern
+  - type: textarea
+    id: details
+    attributes:
+      label: What happened
+      description: What you did, what you expected, and what you got (error text, HTTP status).
+    validations:
+      required: true
+  - type: input
+    id: client
+    attributes:
+      label: Client
+      description: Which agent or client you used, and its version.
+      placeholder: e.g. Claude Code 2.x, Cursor 1.x

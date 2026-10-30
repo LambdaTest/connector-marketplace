@@ -1,0 +1,14 @@
+# Create the @LambdaTest/marketplace-maintainers team before going public (scripts/setup-github.sh lists the steps).
+# Turn on "Require review from Code Owners" in branch protection for main.
+
+# Default: maintainers review everything.
+*                       @LambdaTest/marketplace-maintainers
+
+# The rules of the marketplace. Changes here affect every partner.
+/schema/                @LambdaTest/marketplace-maintainers
+/taxonomy.yaml          @LambdaTest/marketplace-maintainers
+/scripts/               @LambdaTest/marketplace-maintainers
+/.github/               @LambdaTest/marketplace-maintainers
+
+# Badges: only maintainers can grant "verified" or "official".
+/VERIFIED.md            @LambdaTest/marketplace-maintainers

@@ -1,0 +1,43 @@
+# EXAMPLE PARTNER LISTING (fictional vendor). An IDE extension.
+id: contoso-vscode
+name: TestLens for VS Code
+summary: Run the test under your cursor on any cloud browser or real device and watch the session inside the editor.
+vendor:
+  name: Contoso
+  url: https://contoso.example
+products:
+  - automation-cloud
+  - real-device-cloud
+integration:
+  platform: VS Code
+  summary: Adds a "Run on cloud" code lens above each test. Pick a browser or real device, then watch the live session and logs in an editor panel.
+  docs_url: https://contoso.example/testlens/setup
+  capabilities:
+    - Run one test or a whole file on a cloud browser
+    - Run mobile tests on a real device
+    - Watch the live session and console logs in the editor
+    - Jump from a failed step to the line of code
+type: plugin
+stages:
+  - development
+  - test-execution
+  - test-environment
+protocols:
+  - rest
+install:
+  command: code --install-extension contoso.testlens
+  auth: api-key
+  env:
+    - name: LT_USERNAME
+      description: Your account username.
+      required: true
+    - name: LT_ACCESS_KEY
+      description: Your access key from the account settings page.
+      required: true
+      secret: true
+docs_url: https://contoso.example/testlens
+privacy_url: https://contoso.example/privacy
+support:
+  email: testlens@contoso.example
+logo: logos/contoso-vscode.svg
+badge: community

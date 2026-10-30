@@ -1,0 +1,32 @@
+# EXAMPLE PARTNER LISTING (fictional vendor). A remote MCP server from an AI tooling company.
+id: adventure-works-qa-mcp
+name: QA Agent MCP
+summary: An MCP server that lets coding agents write KaneAI tests from a user story and run them on real devices.
+vendor:
+  name: Adventure Works
+  url: https://adventure-works.example
+products:
+  - kaneai
+  - real-device-cloud
+integration:
+  summary: Gives your agent tools to turn a user story into KaneAI test steps, run them on real devices, and return the results with screenshots.
+  docs_url: https://adventure-works.example/qa-mcp/setup
+  capabilities:
+    - Write KaneAI test steps from a user story
+    - Run tests on real Android and iOS devices
+    - Return results with screenshots and device logs
+type: mcp-server
+stages:
+  - test-design
+  - test-execution
+protocols:
+  - streamable-http
+install:
+  url: https://mcp.adventure-works.example/mcp
+  auth: oauth
+docs_url: https://adventure-works.example/qa-mcp
+privacy_url: https://adventure-works.example/privacy
+support:
+  url: https://adventure-works.example/support
+logo: logos/adventure-works-qa-mcp.svg
+badge: community

@@ -1,0 +1,37 @@
+id: kane-cli
+name: Kane CLI
+summary: Generate end-to-end tests from a PRD or plain description and run them on Chrome, Android and iOS.
+vendor:
+  name: TestMu AI
+  url: https://www.testmuai.com
+  github: LambdaTest
+products:
+  - kaneai
+  - test-manager
+  - real-device-cloud
+integration:
+  summary: Turns requirements into use cases, acceptance criteria and runnable tests, runs them locally or on real cloud devices, and saves sessions and coverage to a shared Test Manager project.
+  docs_url: https://www.testmuai.com/support/docs/kane-cli-getting-started/
+  capabilities:
+    - Generate tests from a PRD or specification
+    - Run tests on Chrome, Android emulators and iOS simulators
+    - Run on real Android and iOS devices in the cloud
+    - Measure coverage against acceptance criteria
+    - Share a project and its tests through Test Manager
+type: cli
+stages:
+  - requirements
+  - test-planning
+  - test-design
+  - test-execution
+  - test-reporting
+protocols:
+  - rest
+install:
+  command: npx @testmuai/kane-cli@0.10.0
+docs_url: https://github.com/LambdaTest/kane-cli
+privacy_url: https://www.testmuai.com/legal/privacy/
+support:
+  url: https://github.com/LambdaTest/kane-cli/issues
+logo: logos/kane-cli.svg
+badge: official

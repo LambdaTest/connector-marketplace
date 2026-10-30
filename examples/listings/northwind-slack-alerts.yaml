@@ -1,0 +1,36 @@
+# EXAMPLE PARTNER LISTING (fictional vendor). A Slack app that brings test results into Slack.
+id: northwind-slack-alerts
+name: Test Alerts for Slack
+summary: Get HyperExecute and Test Analytics results in Slack channels, and rerun failed jobs without leaving the thread.
+vendor:
+  name: Northwind Labs
+  url: https://northwind.example
+products:
+  - hyperexecute
+  - test-analytics
+integration:
+  platform: Slack
+  summary: Posts a summary of every HyperExecute job to the channel you pick, links failed tests to Test Analytics, and lets you rerun a job from the message.
+  docs_url: https://northwind.example/docs/slack/setup
+  capabilities:
+    - Post job results to a Slack channel
+    - Mention the commit author when their tests fail
+    - Rerun a failed HyperExecute job from Slack
+    - Send a weekly flaky-test digest from Test Analytics
+type: api-integration
+stages:
+  - test-reporting
+  - defect-triage
+  - monitoring
+protocols:
+  - webhook
+  - rest
+install:
+  url: https://northwind.example/slack/install
+  auth: oauth
+docs_url: https://northwind.example/docs/slack
+privacy_url: https://northwind.example/privacy
+support:
+  email: help@northwind.example
+logo: logos/northwind-slack-alerts.svg
+badge: community

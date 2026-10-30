@@ -1,0 +1,36 @@
+id: hyperexecute-cli
+name: HyperExecute CLI
+summary: Run your test suite on HyperExecute from a laptop or any CI pipeline with one YAML file.
+vendor:
+  name: TestMu AI
+  url: https://www.testmuai.com
+  github: LambdaTest
+products:
+  - hyperexecute
+integration:
+  summary: Uploads your tests and hyperexecute.yaml, runs them on the HyperExecute grid with auto-split and retries, and streams logs and results back.
+  docs_url: https://www.testmuai.com/support/docs/hyperexecute-cli-run-tests-on-hyperexecute-grid/
+type: cli
+stages:
+  - test-execution
+  - build
+  - test-environment
+protocols:
+  - rest
+install:
+  command: hyperexecute --config hyperexecute.yaml
+  auth: api-key
+  env:
+    - name: LT_USERNAME
+      description: Your account username.
+      required: true
+    - name: LT_ACCESS_KEY
+      description: Your access key from the account settings page.
+      required: true
+      secret: true
+docs_url: https://www.testmuai.com/support/docs/hyperexecute-cli-run-tests-on-hyperexecute-grid/
+privacy_url: https://www.testmuai.com/legal/privacy/
+support:
+  url: https://www.testmuai.com/support/
+logo: logos/hyperexecute-cli.svg
+badge: official

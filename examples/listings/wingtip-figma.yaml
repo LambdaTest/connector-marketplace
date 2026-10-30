@@ -1,0 +1,33 @@
+# EXAMPLE PARTNER LISTING (fictional vendor). A design-tool plugin.
+id: wingtip-figma
+name: Design Diff for Figma
+summary: Compare Figma frames with SmartUI screenshots of the built page and flag where the UI drifted from the design.
+vendor:
+  name: Wingtip
+  url: https://wingtip.example
+products:
+  - smartui
+integration:
+  platform: Figma
+  summary: Pulls the latest SmartUI screenshots for a page and overlays them on the matching Figma frame, highlighting spacing, color and text differences.
+  docs_url: https://wingtip.example/design-diff/setup
+  capabilities:
+    - Match Figma frames to SmartUI screenshots
+    - Highlight spacing, color and text differences
+    - Comment on the Figma frame with the diff
+type: plugin
+stages:
+  - design
+  - test-design
+  - test-reporting
+protocols:
+  - rest
+install:
+  url: https://wingtip.example/design-diff/install
+  auth: oauth
+docs_url: https://wingtip.example/design-diff
+privacy_url: https://wingtip.example/privacy
+support:
+  email: support@wingtip.example
+logo: logos/wingtip-figma.svg
+badge: community

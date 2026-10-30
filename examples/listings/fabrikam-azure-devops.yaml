@@ -1,0 +1,43 @@
+# EXAMPLE PARTNER LISTING (fictional vendor). An Azure DevOps extension.
+id: fabrikam-azure-devops
+name: Cloud Test Runner for Azure DevOps
+summary: Pipeline tasks that run Selenium and Playwright suites on the cloud grid and sync results to Test Manager.
+vendor:
+  name: Fabrikam
+  url: https://fabrikam.example
+products:
+  - automation-cloud
+  - test-manager
+integration:
+  platform: Azure DevOps
+  summary: Adds pipeline tasks that start a tunnel, run tests on the Web Automation Cloud, and publish results to both Azure Test Plans and Test Manager.
+  docs_url: https://fabrikam.example/azure-devops/setup
+  capabilities:
+    - Run Selenium and Playwright tests on the cloud grid from a pipeline
+    - Start and stop a tunnel for private environments
+    - Sync test runs to Test Manager and Azure Test Plans
+    - Fail the pipeline on new test failures only
+type: plugin
+stages:
+  - build
+  - test-execution
+  - test-reporting
+protocols:
+  - rest
+install:
+  url: https://fabrikam.example/azure-devops/install
+  auth: api-key
+  env:
+    - name: LT_USERNAME
+      description: Your account username, stored as a pipeline variable.
+      required: true
+    - name: LT_ACCESS_KEY
+      description: Your access key, stored as a secret pipeline variable.
+      required: true
+      secret: true
+docs_url: https://fabrikam.example/azure-devops
+privacy_url: https://fabrikam.example/privacy
+support:
+  url: https://fabrikam.example/support
+logo: logos/fabrikam-azure-devops.svg
+badge: community

@@ -1,0 +1,99 @@
+name: Site
+
+# Builds the marketplace site and deploys it to GitHub Pages:
+# - on every merge to main (new or changed listings go live),
+# - every 6 hours (fresh health status), after each new review (reviews.yml, only with ratings on), and on demand.
+# Ratings are off unless the repo variable RATINGS_ENABLED is 'true'.
+# Health history (down since, last OK) is read back from the live site's health.json,
+# so nothing is committed to the repo. Runs on main only: no fork code.
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: '17 */6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+  issues: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - run: npm ci --no-audit --no-fund
+
+      - id: pages
+        uses: actions/configure-pages@v5
+
+      - name: Build site
+        env:
+          RATINGS_ENABLED: ${{ vars.RATINGS_ENABLED }}
+        run: npm run build:site
+
+      - name: Check health
+        env:
+          SITE_URL: ${{ steps.pages.outputs.base_url }}
+        run: node scripts/check-health.js --out dist/site/health.json --previous "$SITE_URL/health.json"
+
+      - name: Collect ratings
+        if: vars.RATINGS_ENABLED == 'true'
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node scripts/build-ratings.js --out dist/site/ratings.json
+
+      - name: Open or close health issues
+        # A listing that has been down for 4 runs in a row (about a day) gets an issue,
+        # and the issue closes itself when the listing is healthy again.
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const health = require('./dist/site/health.json');
+            const { owner, repo } = context.repo;
+            const LABEL = 'listing-health';
+            const open = await github.paginate(github.rest.issues.listForRepo, { owner, repo, state: 'open', labels: LABEL, per_page: 100 });
+            for (const l of Object.values(health.listings)) {
+              const title = `[Health] ${l.id} is ${l.status === 'down' ? 'down' : 'failing checks'}`;
+              const issue = open.find((i) => i.title.startsWith(`[Health] ${l.id} `));
+              if (l.status !== 'healthy' && l.failing_runs >= 4 && !issue) {
+                const problems = l.problems.map((p) => `- ${p.message}: ${p.url}`).join('\n');
+                await github.rest.issues.create({
+                  owner, repo, title, labels: [LABEL],
+                  body: `\`${l.id}\` has failed health checks since ${l.down_since} (${l.failing_runs} runs in a row).\n\n${problems}\n\nPartner: please fix the endpoint or links, or update the listing. This issue closes itself when checks pass.`,
+                });
+              } else if (l.status === 'healthy' && issue) {
+                await github.rest.issues.createComment({ owner, repo, issue_number: issue.number, body: `Healthy again as of ${l.checked_at}. Closing.` });
+                await github.rest.issues.update({ owner, repo, issue_number: issue.number, state: 'closed' });
+              }
+            }
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist/site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

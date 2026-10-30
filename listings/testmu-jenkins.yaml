@@ -1,0 +1,34 @@
+id: testmu-jenkins
+name: TestMu AI for Jenkins
+summary: Run Selenium tests on the cloud grid from Jenkins jobs and see results inside each build.
+vendor:
+  name: TestMu AI
+  url: https://www.testmuai.com
+  github: LambdaTest
+products:
+  - automation-cloud
+integration:
+  summary: Adds credentials and a tunnel step to Jenkins jobs, runs tests on the cloud grid and embeds test results and videos in the build page.
+  docs_url: https://www.testmuai.com/support/docs/jenkins-with-testmu/
+  platform: Jenkins
+  capabilities:
+    - Store account credentials in Jenkins
+    - Start a tunnel before tests run
+    - Run Selenium tests on the cloud grid from a job
+    - Show test results and videos on the build page
+type: plugin
+stages:
+  - build
+  - test-execution
+  - test-reporting
+protocols:
+  - rest
+install:
+  command: jenkins-plugin-cli --plugins lambdatest-automation
+  auth: api-key
+docs_url: https://plugins.jenkins.io/lambdatest-automation/
+privacy_url: https://www.testmuai.com/legal/privacy/
+support:
+  url: https://www.testmuai.com/support/
+logo: logos/testmu-jenkins.svg
+badge: official

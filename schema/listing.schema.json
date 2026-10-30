@@ -1,0 +1,185 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://marketplace.example.com/schema/listing.schema.json",
+  "title": "Marketplace listing",
+  "description": "One connector listed in the marketplace. Category values (products, type, stages, protocols, badge) come from taxonomy.yaml and are injected by scripts/lib/schema.js at validation time; do not add enums for them here.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "name",
+    "vendor",
+    "products",
+    "integration",
+    "type",
+    "stages",
+    "protocols",
+    "install",
+    "docs_url",
+    "privacy_url",
+    "support",
+    "logo",
+    "badge"
+  ],
+  "properties": {
+    "id": {
+      "description": "Unique, permanent id. Lowercase kebab-case; must match the file name (listings/<id>.yaml).",
+      "type": "string",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+      "minLength": 3,
+      "maxLength": 64
+    },
+    "name": {
+      "description": "Display name.",
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 60
+    },
+    "summary": {
+      "description": "One line shown on the listing card.",
+      "type": "string",
+      "minLength": 10,
+      "maxLength": 160
+    },
+    "vendor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "url"],
+      "properties": {
+        "name": { "type": "string", "minLength": 2, "maxLength": 80 },
+        "url": { "$ref": "#/$defs/httpsUrl" },
+        "github": {
+          "description": "GitHub org or user that owns the listing.",
+          "type": "string",
+          "pattern": "^[A-Za-z0-9](?:[A-Za-z0-9-]{0,38})$"
+        }
+      }
+    },
+    "products": {
+      "description": "Which of our products this connector works with. At least one; values from taxonomy.yaml.",
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/product" }
+    },
+    "integration": {
+      "description": "How the connector works with the products above.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["summary", "docs_url"],
+      "properties": {
+        "summary": {
+          "description": "What a user can do with our product through this connector, e.g. `Triggers HyperExecute jobs from a PR and posts the results back`.",
+          "type": "string",
+          "minLength": 20,
+          "maxLength": 300
+        },
+        "docs_url": {
+          "description": "Page that shows how to set up this connector with our product.",
+          "$ref": "#/$defs/httpsUrl"
+        },
+        "platform": {
+          "description": "The other tool this connector links to our products, e.g. `Jira`, `GitHub`, `Jenkins`. Leave out for standalone tools.",
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 40
+        },
+        "capabilities": {
+          "description": "What a user can do with it, one short line each, e.g. `Create Jira bugs from failed tests`.",
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 8,
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 5, "maxLength": 100 }
+        }
+      }
+    },
+    "type": { "$ref": "#/$defs/type" },
+    "stages": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/stage" }
+    },
+    "protocols": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/protocol" }
+    },
+    "install": {
+      "description": "How to connect. Give a remote url, a local command, or both.",
+      "type": "object",
+      "additionalProperties": false,
+      "anyOf": [{ "required": ["url"] }, { "required": ["command"] }],
+      "properties": {
+        "url": { "$ref": "#/$defs/httpsUrl" },
+        "command": {
+          "description": "Shell command that starts the connector locally, e.g. `npx -y @acme/mcp@1.2.0`.",
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 300
+        },
+        "registry_name": {
+          "description": "Name in the official MCP Registry, if published there.",
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9.-]+/[a-zA-Z0-9._-]+$"
+        },
+        "auth": {
+          "type": "string",
+          "enum": ["none", "oauth", "api-key", "basic"]
+        },
+        "env": {
+          "description": "Environment variables the user must set. Never put real values here.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["name", "description"],
+            "properties": {
+              "name": { "type": "string", "pattern": "^[A-Z][A-Z0-9_]*$" },
+              "description": { "type": "string", "minLength": 3, "maxLength": 200 },
+              "required": { "type": "boolean" },
+              "secret": { "type": "boolean" }
+            }
+          }
+        }
+      }
+    },
+    "docs_url": { "$ref": "#/$defs/httpsUrl" },
+    "privacy_url": { "$ref": "#/$defs/httpsUrl" },
+    "support": {
+      "description": "How users get help. At least one of email or url.",
+      "type": "object",
+      "additionalProperties": false,
+      "anyOf": [{ "required": ["email"] }, { "required": ["url"] }],
+      "properties": {
+        "email": { "type": "string", "format": "email" },
+        "url": { "$ref": "#/$defs/httpsUrl" }
+      }
+    },
+    "logo": {
+      "description": "Path to a square SVG or PNG under logos/, e.g. logos/acme-mcp.svg.",
+      "type": "string",
+      "pattern": "^logos/[a-z0-9-]+\\.(svg|png)$"
+    },
+    "badge": { "$ref": "#/$defs/badge" },
+    "health_url": {
+      "description": "Endpoint that returns 2xx when the connector is up. Required for verified/official badges (see taxonomy.yaml).",
+      "$ref": "#/$defs/httpsUrl"
+    }
+  },
+  "$defs": {
+    "httpsUrl": {
+      "type": "string",
+      "format": "uri",
+      "pattern": "^https://[^\\s]+$",
+      "maxLength": 500
+    },
+    "product": { "type": "string" },
+    "type": { "type": "string" },
+    "stage": { "type": "string" },
+    "protocol": { "type": "string" },
+    "badge": { "type": "string" }
+  }
+}

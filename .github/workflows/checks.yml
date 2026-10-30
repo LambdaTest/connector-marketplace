@@ -1,0 +1,143 @@
+name: Listing checks
+
+# Runs on PRs from forks with the default `pull_request` trigger:
+# read-only token, no repository secrets, nothing here needs either.
+# Do NOT switch to `pull_request_target`: it would run fork code with write access.
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: checks-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  schema:
+    name: Schema, logos, secrets
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - run: npm ci --no-audit --no-fund
+
+      - name: Changed files
+        id: changed
+        if: github.event_name == 'pull_request'
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          git diff --name-only --diff-filter=ACMR "$BASE_SHA"...HEAD > "$RUNNER_TEMP/changed.txt"
+          echo "Changed files:"; cat "$RUNNER_TEMP/changed.txt"
+
+      - name: Partner PR scope
+        # Only fork PRs are limited to listings/ and logos/. Maintainers work from branches.
+        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork
+        run: xargs -a "$RUNNER_TEMP/changed.txt" node scripts/check-pr-scope.js
+
+      - name: Unit tests
+        run: npm test
+
+      - name: Validate listings
+        run: npm run validate
+
+      - name: Check logos
+        run: npm run check:logos
+
+      - name: Scan for secrets
+        run: |
+          npm run check:secrets
+          if [ -s "$RUNNER_TEMP/changed.txt" ]; then
+            # Also scan every text file the PR touches, not just listings and logos.
+            grep -Ev '\.(png|jpe?g|gif|ico|webp)$' "$RUNNER_TEMP/changed.txt" | xargs -r node scripts/scan-secrets.js
+          fi
+
+      - name: Build catalog
+        run: npm run build
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: catalog
+          path: dist/catalog.json
+          retention-days: 7
+
+  links:
+    name: Links and health
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - run: npm ci --no-audit --no-fund
+
+      - name: Check links in changed listings
+        env:
+          EVENT: ${{ github.event_name }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          if [ "$EVENT" = "pull_request" ]; then
+            files=$(git diff --name-only --diff-filter=ACMR "$BASE_SHA"...HEAD -- 'listings/*.yaml')
+            if [ -z "$files" ]; then echo "No listings changed"; exit 0; fi
+            node scripts/check-links.js $files
+          else
+            npm run check:links
+          fi
+
+  report:
+    name: PR report
+    # Builds the comment the PR bot posts. This job can't comment itself:
+    # fork PRs get a read-only token. pr-bot.yml posts it from the base repo.
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - run: npm ci --no-audit --no-fund
+
+      - name: Build report
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          HEAD_REPO: ${{ github.event.pull_request.head.repo.full_name }}
+          IS_FORK: ${{ github.event.pull_request.head.repo.fork }}
+        run: |
+          mkdir -p pr-report
+          set -- --base "$BASE_SHA" --out pr-report/report.md --logo-base "https://raw.githubusercontent.com/$HEAD_REPO/$HEAD_SHA/"
+          if [ "$IS_FORK" = "true" ]; then set -- "$@" --fork; fi
+          node scripts/pr-report.js "$@" >> "$GITHUB_STEP_SUMMARY"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pr-report
+          path: pr-report/
+          retention-days: 3

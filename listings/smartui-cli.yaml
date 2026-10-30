@@ -1,0 +1,33 @@
+id: smartui-cli
+name: SmartUI CLI
+summary: Capture screenshots from your test runs or static sites and compare them for visual regressions.
+vendor:
+  name: TestMu AI
+  url: https://www.testmuai.com
+  github: LambdaTest
+products:
+  - smartui
+integration:
+  summary: Uploads screenshots from Selenium, Playwright, Cypress or static pages to a SmartUI project and reports visual diffs against the baseline.
+  docs_url: https://www.testmuai.com/support/docs/smartui-cli/
+type: cli
+stages:
+  - test-execution
+  - test-reporting
+  - build
+protocols:
+  - rest
+install:
+  command: npx @lambdatest/smartui-cli@4 exec -- npm test
+  auth: api-key
+  env:
+    - name: PROJECT_TOKEN
+      description: SmartUI project token from the project settings page.
+      required: true
+      secret: true
+docs_url: https://www.testmuai.com/support/docs/smartui-cli/
+privacy_url: https://www.testmuai.com/legal/privacy/
+support:
+  url: https://www.testmuai.com/support/
+logo: logos/smartui-cli.svg
+badge: official

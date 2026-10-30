@@ -1,0 +1,36 @@
+id: testmu-tunnel
+name: TestMu AI Tunnel
+summary: Test locally hosted or private staging apps on cloud browsers and real devices through a secure tunnel.
+vendor:
+  name: TestMu AI
+  url: https://www.testmuai.com
+  github: LambdaTest
+products:
+  - automation-cloud
+  - real-device-cloud
+integration:
+  summary: Opens a secure tunnel from your machine or CI runner so cloud browsers and real devices can reach localhost and private environments.
+  docs_url: https://www.testmuai.com/support/docs/testing-locally-hosted-pages/
+type: cli
+stages:
+  - test-environment
+  - test-execution
+protocols:
+  - rest
+install:
+  command: LT --user $LT_USERNAME --key $LT_ACCESS_KEY
+  auth: api-key
+  env:
+    - name: LT_USERNAME
+      description: Your account username.
+      required: true
+    - name: LT_ACCESS_KEY
+      description: Your access key from the account settings page.
+      required: true
+      secret: true
+docs_url: https://www.testmuai.com/support/docs/testing-locally-hosted-pages/
+privacy_url: https://www.testmuai.com/legal/privacy/
+support:
+  url: https://github.com/LambdaTest/LambdaTest-tunnel
+logo: logos/testmu-tunnel.svg
+badge: official

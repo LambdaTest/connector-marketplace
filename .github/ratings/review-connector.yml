@@ -1,0 +1,44 @@
+name: Rate a connector
+description: Rate a connector from 1 to 5 stars and say how it worked for you.
+title: "[Review] "
+labels: ["review"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for rating! Your rating shows on the marketplace within a few minutes, and this issue closes itself.
+        Only your latest rating per connector counts. To change it, edit this issue or post a new review.
+        **Don't paste API keys, tokens or private logs.** Reviews are public.
+  - type: input
+    id: listing
+    attributes:
+      label: Connector id
+      description: Filled in for you when you start from the marketplace. It's the listing's file name, without .yaml.
+      placeholder: e.g. hyperexecute-cli
+    validations:
+      required: true
+  - type: dropdown
+    id: rating
+    attributes:
+      label: Rating
+      options:
+        - "5 ★★★★★ Excellent"
+        - "4 ★★★★ Good"
+        - "3 ★★★ OK"
+        - "2 ★★ Poor"
+        - "1 ★ Didn't work"
+    validations:
+      required: true
+  - type: textarea
+    id: review
+    attributes:
+      label: Review
+      description: Optional. What did you use it for, and how did it go?
+      placeholder: e.g. Set it up in 5 minutes; our nightly suite now runs on HyperExecute from the Jira issue.
+  - type: checkboxes
+    id: affiliation
+    attributes:
+      label: Affiliation
+      options:
+        - label: I don't work for the company that makes this connector
+          required: true
