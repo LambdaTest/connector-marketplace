@@ -1,7 +1,7 @@
 # Building a connector
 
 This guide is for developers building a connector that works with TestMu AI (formerly LambdaTest): a Jira or Slack app, a CI plugin, an IDE extension, an MCP server or an AI agent.
-When your connector works, list it with the [contributing guide](../CONTRIBUTING.md).
+This is step 1. When your connector works, go to [step 2: List your connector](../CONTRIBUTING.md).
 
 Your connector runs on your side and talks to our platform **with the end user's own TestMu AI account**.
 The marketplace only lists it; it never sits between your connector and our platform.

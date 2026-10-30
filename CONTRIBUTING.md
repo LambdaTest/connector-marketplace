@@ -2,7 +2,7 @@
 
 Anyone who builds a connector for our products can list it in the marketplace. The whole process is one pull request (PR) on this repo: you add a short YAML file and a logo, automated checks review it in minutes, and a maintainer approves it.
 
-Still building your connector? Start with [Building a connector](docs/building-a-connector.md): our REST APIs, MCP server, grid, webhooks and how to authenticate.
+This is step 2. Haven't built your connector yet? Start with [step 1: Build your connector](docs/building-a-connector.md): our REST APIs, MCP server, grid, webhooks and how to authenticate.
 
 ## What we accept
 
@@ -28,13 +28,13 @@ Not accepted:
 You need:
 
 - A GitHub account
-- A working connector, with public setup docs that show how to use it with our product (see [Building a connector](docs/building-a-connector.md))
+- A working connector, with public setup docs that show how to use it with our product (see [step 1: Build your connector](docs/building-a-connector.md))
 - A privacy policy that covers the data the connector handles
 - A support email or page where a person answers
 - A square logo (SVG, or PNG at least 128×128 px), at most 100 KB
 - Node.js 20 or newer, to run the checks on your machine
 
-## Step 1: Fork the repo and create a branch
+## Fork the repo and create a branch
 
 ```bash
 # Fork on GitHub first, then:
@@ -44,7 +44,7 @@ git checkout -b add-<your-id>
 npm ci
 ```
 
-## Step 2: Add your listing and logo
+## Add your listing and logo
 
 Add exactly two files:
 
@@ -146,7 +146,7 @@ Some protocols need a matching install field: `streamable-http` and `sse` need `
 - At most 100 KB
 - SVGs can't contain scripts, event handlers (`onclick=` and so on), `<foreignObject>` or links to outside files
 
-## Step 3: Run the checks on your machine
+## Run the checks on your machine
 
 ```bash
 npm run check                                          # schema, logo, secret scan
@@ -162,7 +162,7 @@ Every error gives the file, the line and usually the fix:
     listings/acme-mcp.yaml:16  support: needs at least one of `email` or `url`
 ```
 
-## Step 4: Open the pull request
+## Open the pull request
 
 ```bash
 git add listings/<your-id>.yaml logos/<your-id>.svg
@@ -182,7 +182,7 @@ Push fixes to the same branch; the comment updates each time. The PR is labelled
 
 A partner PR may only change `listings/` and `logos/`. If you think the schema or the categories need to change, open an issue instead.
 
-## Step 5: Review
+## Review
 
 A maintainer reviews PRs that pass all checks, usually within 3 business days. We check that:
 

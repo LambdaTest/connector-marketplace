@@ -30,7 +30,7 @@ for (const guide of GUIDES) {
 }
 
 test('contributing guide links to the building guide', () => {
-  const { body } = renderGuide(GUIDES[0], REPO);
+  const { body } = renderGuide(GUIDES.find((g) => g.src === 'CONTRIBUTING.md'), REPO);
   assert.ok(hrefs(body).includes('building-a-connector.html'));
   assert.ok(hrefs(body).includes(`${REPO}/blob/main/taxonomy.yaml`));
 });

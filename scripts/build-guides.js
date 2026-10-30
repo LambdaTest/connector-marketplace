@@ -11,8 +11,9 @@ const { Marked } = require('marked');
 const { ROOT } = require('./lib/taxonomy');
 
 const GUIDES = [
-  { src: 'CONTRIBUTING.md', out: 'contributing.html', title: 'Contributing guide', nav: 'List your connector' },
-  { src: 'docs/building-a-connector.md', out: 'building-a-connector.html', title: 'Building a connector', nav: 'Build a connector' },
+  // In the order a partner follows them: build the connector, then list it.
+  { src: 'docs/building-a-connector.md', out: 'building-a-connector.html', title: 'Step 1: Build your connector', nav: '1 · Build it' },
+  { src: 'CONTRIBUTING.md', out: 'contributing.html', title: 'Step 2: List your connector', nav: '2 · List it' },
 ];
 
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
