@@ -514,6 +514,8 @@ async function boot() {
   render();
   const id = decodeURIComponent(location.hash.slice(1));
   if (id && CATALOG.listings.some(l => l.id === id)) openDrawer(id);
+  // The browser jumped to #section before the cards were drawn; jump again now that the layout is final.
+  else if (id) document.getElementById(id)?.scrollIntoView();
 }
 boot();
 </script>
