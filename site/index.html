@@ -199,7 +199,7 @@ header.top { display: flex; flex-wrap: wrap; align-items: end; justify-content: 
     <label for="q" class="sr-only">Search connectors</label>
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
     <input id="q" type="search" placeholder="Search by name, vendor or what it does" autocomplete="off">
-    <kbd aria-hidden="true">/</kbd>
+    <kbd id="search-key" aria-hidden="true">⌘K</kbd>
   </div>
 
   <section class="track" aria-label="Filter by lifecycle stage">
@@ -409,11 +409,17 @@ document.addEventListener('click', e => {
   else if ('reset' in t.dataset) { Object.assign(state, { q: '', product: null, type: null, badge: null, minRating: null }); state.stages.clear(); document.getElementById('q').value = ''; render(); }
 });
 document.getElementById('scrim').onclick = closeDrawer;
+// userAgentData reports "macOS", navigator.platform "MacIntel": match either.
+const IS_MAC = /mac|iphone|ipad/i.test(navigator.userAgentData?.platform || navigator.platform);
+if (!IS_MAC) document.getElementById('search-key').textContent = 'Ctrl K';
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape' && !document.getElementById('drawer').hidden) closeDrawer();
-  // "/" jumps to search, unless the user is already typing somewhere.
-  else if (e.key === '/' && !e.metaKey && !e.ctrlKey && !/^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement.tagName) && document.getElementById('drawer').hidden) {
-    e.preventDefault(); document.getElementById('q').focus();
+  // ⌘K (Ctrl+K off macOS) jumps to search from anywhere on the page.
+  else if (e.key.toLowerCase() === 'k' && (IS_MAC ? e.metaKey : e.ctrlKey) && !e.altKey && !e.shiftKey) {
+    e.preventDefault();
+    if (!document.getElementById('drawer').hidden) closeDrawer();
+    const q = document.getElementById('q');
+    q.focus(); q.select();
   }
 });
 async function boot() {
