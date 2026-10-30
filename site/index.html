@@ -68,32 +68,45 @@ body { margin: 0; }
 img { max-width: 100%; }
 body { background: var(--bg); color: var(--fg); font: 15px/1.55 var(--f-body); }
 .wrap { max-width: 1180px; margin: 0 auto; padding-inline: 20px; padding-block: 28px 64px; display: grid; gap: 22px; }
-.preview-note { font: 500 12px/1.4 var(--f-mono); color: var(--muted); letter-spacing: .02em; }
+.status-line { display: inline-flex; align-items: center; gap: 8px; margin: 10px 0 0; font-size: 13px; color: var(--muted); }
+.status-line .dot { width: 8px; height: 8px; color: var(--muted); }
+.status-line.healthy .dot { color: var(--verified); }
+.status-line.degraded .dot { color: var(--warn); }
+.status-line.down .dot { color: var(--down); }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
 header.top { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 16px; }
 .brand h1 { font: 800 clamp(26px, 4vw, 38px)/1.05 var(--f-display); letter-spacing: -.02em; margin: 0; text-wrap: balance; }
 .brand p { margin: 6px 0 0; color: var(--muted); max-width: 60ch; }
 .btn { font: 600 14px/1 var(--f-body); border-radius: 8px; padding: 11px 16px; border: 1px solid var(--line); background: var(--surface); color: var(--fg); cursor: pointer; text-decoration: none; display: inline-flex; gap: 8px; align-items: center; }
 .btn.primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
 .btn:focus-visible, .chip:focus-visible, .stop:focus-visible, .card:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-.search { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
-.search input { flex: 1 1 280px; min-width: 0; font: 15px var(--f-body); padding: 12px 14px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); color: var(--fg); }
-.search .count { font: 500 13px var(--f-mono); color: var(--muted); font-variant-numeric: tabular-nums; }
+.search { position: relative; }
+.search svg { position: absolute; left: 14px; top: 50%; translate: 0 -50%; width: 18px; height: 18px; color: var(--muted); pointer-events: none; }
+.search input { width: 100%; font: 15px var(--f-body); padding: 13px 44px; border-radius: 12px; border: 1px solid var(--line); background: var(--surface); color: var(--fg); }
+.search input::placeholder { color: var(--muted); }
+.search kbd { position: absolute; right: 12px; top: 50%; translate: 0 -50%; font: 500 12px var(--f-mono); color: var(--muted); border: 1px solid var(--line); border-radius: 6px; padding: 2px 7px; pointer-events: none; }
+.search input:focus + kbd, .search input:not(:placeholder-shown) + kbd { display: none; }
+.results-bar { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; font-size: 14px; color: var(--muted); margin-bottom: -8px; }
+.results-bar strong { color: var(--fg); font-weight: 600; font-variant-numeric: tabular-nums; }
 
 /* Lifecycle track */
-.track { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px 14px; display: grid; gap: 14px; }
-.track-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.track { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; display: grid; gap: 14px; }
+.track-head { display: flex; align-items: baseline; gap: 4px 12px; flex-wrap: wrap; }
 .track-head h2 { font: 700 13px var(--f-display); text-transform: uppercase; letter-spacing: .08em; margin: 0; color: var(--muted); }
+.track-head .hint { font-size: 13px; color: var(--muted); margin-right: auto; }
 .link-btn { background: none; border: 0; color: var(--accent); font: 600 13px var(--f-body); cursor: pointer; padding: 0; }
-.lanes { overflow-x: auto; display: grid; gap: 12px; padding-bottom: 4px; }
-.lane { display: grid; grid-template-columns: 64px 1fr; align-items: center; gap: 10px; min-width: 820px; }
-.lane-label { font: 700 12px var(--f-mono); letter-spacing: .06em; }
+/* Stages wrap onto more lines instead of scrolling sideways, so every stage stays visible. */
+.lanes { display: grid; gap: 12px; }
+.lane { display: grid; grid-template-columns: 56px minmax(0, 1fr); align-items: start; gap: 10px; }
+.lane + .lane { border-top: 1px solid var(--line); padding-top: 12px; }
+.lane-label { font: 700 12px var(--f-mono); letter-spacing: .06em; padding-top: 7px; }
 .lane[data-group="sdlc"] .lane-label { color: var(--sdlc); }
 .lane[data-group="stlc"] .lane-label { color: var(--stlc); }
-.stops { position: relative; display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 6px; }
-.stops::before { content: ""; position: absolute; left: 8px; right: 8px; top: 50%; height: 2px; background: var(--line); }
+.stops { display: flex; flex-wrap: wrap; gap: 6px; }
 .stop { position: relative; z-index: 1; border: 1px solid var(--line); background: var(--surface); color: var(--fg); border-radius: 999px; padding: 6px 10px; font: 500 12.5px/1.2 var(--f-body); display: flex; justify-content: space-between; align-items: center; gap: 6px; cursor: pointer; white-space: nowrap; }
 .stop .n { font: 500 11px var(--f-mono); color: var(--muted); font-variant-numeric: tabular-nums; }
-.stop.empty { color: var(--muted); }
+.stop.empty { color: var(--muted); border-style: dashed; }
+.stop:hover { border-color: var(--accent); }
 .lane[data-group="sdlc"] .stop.on { background: var(--sdlc); border-color: var(--sdlc); color: var(--on-accent); }
 .lane[data-group="stlc"] .stop.on { background: var(--stlc); border-color: var(--stlc); color: var(--on-accent); }
 .stop.on .n { color: inherit; opacity: .85; }
@@ -162,6 +175,9 @@ header.top { display: flex; flex-wrap: wrap; align-items: end; justify-content: 
 .dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; flex: none; }
 
 @media (max-width: 640px) {
+  .lane { grid-template-columns: minmax(0, 1fr); gap: 6px; }
+  .lane-label { padding-top: 0; }
+  .search kbd { display: none; }
   .drawer { top: auto; height: 88%; width: 100%; border-left: 0; border-top: 1px solid var(--line); border-radius: 16px 16px 0 0; }
 }
 @media (prefers-reduced-motion: reduce) { .card { transition: none; } .card:hover { transform: none; } }
@@ -170,25 +186,26 @@ header.top { display: flex; flex-wrap: wrap; align-items: end; justify-content: 
 <body>
 
 <div class="wrap">
-  <div class="preview-note" id="status-line">Loading catalog…</div>
-
   <header class="top">
     <div class="brand">
       <h1>Connector Marketplace</h1>
       <p>Connectors that work with our products: MCP servers, CLIs, plugins and integrations, sorted by where they help in the development and testing lifecycle.</p>
+      <p class="status-line" id="status-line" role="status"><span class="dot"></span><span>Loading catalog…</span></p>
     </div>
     <button class="btn primary" type="button" data-add>Add your connector</button>
   </header>
 
   <div class="search">
-    <label for="q" class="sr" hidden>Search connectors</label>
+    <label for="q" class="sr-only">Search connectors</label>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
     <input id="q" type="search" placeholder="Search by name, vendor or what it does" autocomplete="off">
-    <span class="count" id="count"></span>
+    <kbd aria-hidden="true">/</kbd>
   </div>
 
   <section class="track" aria-label="Filter by lifecycle stage">
     <div class="track-head">
       <h2>Lifecycle stage</h2>
+      <span class="hint">Pick one or more stages to filter</span>
       <button class="link-btn" id="clear-stages" type="button" hidden>Clear stages</button>
     </div>
     <div class="lanes" id="lanes"></div>
@@ -203,7 +220,8 @@ header.top { display: flex; flex-wrap: wrap; align-items: end; justify-content: 
     <div class="filter-group" id="ratings" hidden><span>Rating</span></div>
   </div>
 
-  <main class="grid" id="grid" aria-live="polite"></main>
+  <div class="results-bar"><span id="count" aria-live="polite"></span><button class="link-btn" type="button" data-reset hidden>Clear all filters</button></div>
+  <main class="grid" id="grid"></main>
 
 </div>
 
@@ -344,8 +362,12 @@ function render() {
   const order = { official: 0, verified: 1, community: 2 };
   shown.sort((a, b) => (order[a.badge] ?? 9) - (order[b.badge] ?? 9) || a.name.localeCompare(b.name));
   document.getElementById('grid').innerHTML = shown.length ? shown.map(card).join('')
-    : `<div class="empty-state">No connectors match these filters yet. <button class="link-btn" type="button" id="reset">Clear all filters</button> or ${REPO_URL ? `<a href="${esc(REPO_URL)}/issues/new?template=request-connector.yml" target="_blank" rel="noopener" style="color:var(--accent)">request one</a>` : '<button class="link-btn" type="button" data-add>add yours</button>'}.</div>`;
-  document.getElementById('count').textContent = `${shown.length} of ${CATALOG.count} connectors`;
+    : `<div class="empty-state">No connectors match these filters yet. <button class="link-btn" type="button" data-reset>Clear all filters</button> or ${REPO_URL ? `<a href="${esc(REPO_URL)}/issues/new?template=request-connector.yml" target="_blank" rel="noopener" style="color:var(--accent)">request one</a>` : '<button class="link-btn" type="button" data-add>add yours</button>'}.</div>`;
+  const filtered = state.q || state.stages.size || state.product || state.type || state.badge || state.minRating;
+  document.getElementById('count').innerHTML = filtered
+    ? `<strong>${shown.length}</strong> of ${CATALOG.count} connectors`
+    : `<strong>${CATALOG.count}</strong> connectors`;
+  document.querySelector('.results-bar [data-reset]').hidden = !filtered;
   renderLanes();
   renderChips('products', CATALOG.taxonomy.products, 'product', 'products');
   renderChips('types', CATALOG.taxonomy.types, 'type', 'type');
@@ -375,7 +397,7 @@ function closeDrawer() {
 
 document.getElementById('q').addEventListener('input', e => { state.q = e.target.value.trim().toLowerCase(); render(); });
 document.addEventListener('click', e => {
-  const t = e.target.closest('[data-stage],[data-product],[data-type],[data-badge],[data-rating],[data-add],#reset,#clear-stages');
+  const t = e.target.closest('[data-stage],[data-product],[data-type],[data-badge],[data-rating],[data-add],[data-reset],#clear-stages');
   if (!t) return;
   if (t.dataset.stage) { state.stages.has(t.dataset.stage) ? state.stages.delete(t.dataset.stage) : state.stages.add(t.dataset.stage); render(); }
   else if (t.dataset.product) { state.product = state.product === t.dataset.product ? null : t.dataset.product; render(); }
@@ -384,10 +406,16 @@ document.addEventListener('click', e => {
   else if (t.dataset.rating) { const v = Number(t.dataset.rating); state.minRating = state.minRating === v ? null : v; render(); }
   else if ('add' in t.dataset) openAddDrawer();
   else if (t.id === 'clear-stages') { state.stages.clear(); render(); }
-  else if (t.id === 'reset') { Object.assign(state, { q: '', product: null, type: null, badge: null, minRating: null }); state.stages.clear(); document.getElementById('q').value = ''; render(); }
+  else if ('reset' in t.dataset) { Object.assign(state, { q: '', product: null, type: null, badge: null, minRating: null }); state.stages.clear(); document.getElementById('q').value = ''; render(); }
 });
 document.getElementById('scrim').onclick = closeDrawer;
-document.addEventListener('keydown', e => { if (e.key === 'Escape' && !document.getElementById('drawer').hidden) closeDrawer(); });
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && !document.getElementById('drawer').hidden) closeDrawer();
+  // "/" jumps to search, unless the user is already typing somewhere.
+  else if (e.key === '/' && !e.metaKey && !e.ctrlKey && !/^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement.tagName) && document.getElementById('drawer').hidden) {
+    e.preventDefault(); document.getElementById('q').focus();
+  }
+});
 async function boot() {
   try {
     const [cat, health, ratings] = await Promise.all([
@@ -397,15 +425,25 @@ async function boot() {
     ]);
     CATALOG = cat; HEALTH = health; RATINGS = ratings;
   } catch (err) {
-    document.getElementById('status-line').textContent = 'Could not load the catalog. Refresh to try again.';
+    document.getElementById('status-line').lastElementChild.textContent = 'Could not load the catalog. Refresh to try again.';
     return;
   }
   CATALOG.taxonomy.stage_groups.forEach(g => g.values.forEach(v => stageInfo[v.id] = { ...v, group: g.id }));
   // Count only listings on the page: ones failing for 7+ days are left out of catalog.json.
   const shownHealth = HEALTH ? CATALOG.listings.map(l => HEALTH.listings[l.id]).filter(Boolean) : [];
   const hc = HEALTH && Object.fromEntries(['healthy', 'degraded', 'down'].map(s => [s, shownHealth.filter(h => h.status === s).length]));
-  document.getElementById('status-line').textContent = `${CATALOG.count} connectors` +
-    (hc ? ` · ${hc.healthy} healthy${hc.degraded ? `, ${hc.degraded} with a broken link` : ''}${hc.down ? `, ${hc.down} down` : ''} · checked ${ago(HEALTH.checked_at)}` : '');
+  // One health summary; the connector count lives in the results bar above the grid.
+  const line = document.getElementById('status-line');
+  if (hc) {
+    const worst = hc.down ? 'down' : hc.degraded ? 'degraded' : 'healthy';
+    const parts = hc.degraded || hc.down
+      ? [`${hc.healthy} healthy`, hc.degraded && `${hc.degraded} with a broken link`, hc.down && `${hc.down} down`].filter(Boolean).join(', ')
+      : `All ${hc.healthy} connectors healthy`;
+    line.className = `status-line ${worst}`;
+    line.lastElementChild.textContent = `${parts} · checked ${ago(HEALTH.checked_at)}`;
+  } else {
+    line.lastElementChild.textContent = 'Health checks run every 6 hours';
+  }
   const params = new URLSearchParams(location.search);
   for (const key of ['product', 'type', 'badge']) if (params.get(key)) state[key] = params.get(key);
   params.getAll('stage').forEach(s => state.stages.add(s));
