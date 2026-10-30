@@ -184,7 +184,7 @@ A partner PR may only change `listings/` and `logos/`. If you think the schema o
 
 ## Review
 
-A maintainer reviews PRs that pass all checks, usually within 3 business days. We check that:
+A maintainer reviews PRs that pass all checks within 7 working days. We check that:
 
 - the connector really works with the products it lists (we may ask for a demo or a test account)
 - `docs_url` and `integration.docs_url` explain setup and auth
@@ -216,7 +216,8 @@ Every listing's links (`vendor.url`, `docs_url`, `integration.docs_url`, `privac
 
 - The marketplace shows **Healthy**, **Broken link** or **Down since** a date on your card.
 - If your listing fails for about a day (4 checks in a row), we open a `listing-health` issue. It closes itself when the checks pass again.
-- If a problem isn't fixed, we may remove the Verified badge or the listing.
+- If it's still failing **7 days** after the first failure, the listing is hidden from the marketplace. It comes back on its own as soon as the checks pass; you don't need a new PR.
+- If a problem isn't fixed, we may also remove the Verified badge or the listing.
 
 ## Ratings
 

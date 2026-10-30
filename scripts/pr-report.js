@@ -105,7 +105,9 @@ async function main() {
     }
     const errs = result.errors;
     const productErrs = errs.filter((e) => /^(products|integration)/.test(e.message));
-    const otherErrs = errs.filter((e) => !productErrs.includes(e));
+    // e.g. a remote listing claiming a badge that needs health_url without one: report it on the Health row.
+    const healthErrs = errs.filter((e) => e.message.startsWith('health_url'));
+    const otherErrs = errs.filter((e) => !productErrs.includes(e) && !healthErrs.includes(e));
     const links = listing && typeof listing === 'object' ? (await checkListing(listing, taxonomy)).checks : [];
     const linkFails = links.filter((c) => c.kind === 'link' && c.outcome === 'fail');
     const linkWarns = links.filter((c) => c.outcome === 'warn');
@@ -121,7 +123,11 @@ async function main() {
       ['Logo', thisLogo.length === 0 && !errs.some((e) => e.message.startsWith('logo:')), thisLogo.join('; ')],
       ['No secrets', fileSecrets.length === 0, fileSecrets.map((s) => `line ${s.line}: ${s.rule}`).join('; ')],
       ['Links', linkFails.length === 0, linkFails.length ? linkFails.map((c) => md(describeCheck(c))).join('; ') : `${links.filter((c) => c.kind === 'link').length} checked${linkWarns.length ? `, ${linkWarns.length} to check by hand` : ''}`],
-      ['Health', !health || health.outcome === 'ok', health ? md(describeCheck(health)) : 'not needed (no health_url)'],
+      [
+        'Health',
+        healthErrs.length === 0 && (!health || health.outcome === 'ok'),
+        healthErrs.length ? md(healthErrs.map((e) => e.message).join('; ')) : health ? md(describeCheck(health)) : 'not needed (no health_url)',
+      ],
     ];
     const pass = checks.every((c) => c[1]);
     allPass = allPass && pass;

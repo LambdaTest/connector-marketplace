@@ -11,6 +11,7 @@ label() { gh label create "$1" --color "$2" --description "$3" --force -R "$REPO
 label ready-for-review 0e8a16 "All listing checks pass; waiting for a maintainer"
 label needs-changes    d93f0b "A listing check failed; see the bot comment"
 label listing-health   b60205 "A listed connector has failed health checks for about a day"
+label listing-hidden   5a5a5a "Failing for 7+ days, so hidden from the marketplace until checks pass"
 label review           c5def5 "Rate a connector (ratings)"
 label review-invalid   fbca04 "Rating can't be counted yet"
 label review-hidden    5319e7 "Rating hidden by a maintainer"

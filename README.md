@@ -71,7 +71,7 @@ npm run validate        # check every listing (or: node scripts/validate.js list
 npm run check           # validate + logos + secret scan
 npm run check:links     # fetch docs/privacy/support links and health_url (needs network)
 npm run build           # write dist/catalog.json
-npm run serve           # build the site + health.json and open it at http://localhost:8080
+npm run serve           # build the site + health.json and open it at http://localhost:1221
 npm test                # unit tests
 ```
 
@@ -109,6 +109,7 @@ It never checks out PR code, and it finds the PR through the API rather than tru
 1. builds `dist/site/` (page, `catalog.json`, logos),
 2. checks every listing and writes `health.json`, reading the previous one from the live site to keep "down since" and "last OK" history,
 3. opens a `listing-health` issue for a listing that has failed for about a day, and closes it when it recovers,
+   hides a listing that has failed for 7 days by leaving it out of the published `catalog.json` (labels the issue `listing-hidden`); it reappears when checks pass,
 4. deploys to GitHub Pages.
 
 No server or database: the site is static, and health history lives in the published `health.json`.
@@ -128,7 +129,7 @@ Rules:
 
 Run `scripts/setup-github.sh <org>/<repo>` once after the first push (needs `gh`, logged in as a repo admin). It:
 
-- creates the labels the workflows use (`ready-for-review`, `needs-changes`, `listing-health`, plus the rating labels)
+- creates the labels the workflows use (`ready-for-review`, `needs-changes`, `listing-health`, `listing-hidden`, plus the rating labels)
 - turns on GitHub Pages (source: GitHub Actions) and private vulnerability reporting
 - protects `main`: the "Listing checks" jobs must pass and Code Owners must review
 - sets `RATINGS_ENABLED=false`

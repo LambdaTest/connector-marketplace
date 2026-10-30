@@ -16,8 +16,8 @@
     "test": "node --test tests/",
     "build:site": "node scripts/build-site.js",
     "build:ratings": "node scripts/build-ratings.js --out dist/site/ratings.json",
-    "check:health": "node scripts/check-health.js --out dist/site/health.json --previous dist/site/health.json",
-    "serve": "npm run build:site && npm run build:ratings && npm run check:health && npx --yes http-server@14 dist/site -p 8080 -c-1"
+    "check:health": "node scripts/check-health.js --out dist/site/health.json --previous dist/site/health.json --catalog dist/site/catalog.json",
+    "serve": "npm run build:site && npm run build:ratings && npm run check:health && npx --yes http-server@14 dist/site -p 1221 -c-1"
   },
   "dependencies": {
     "ajv": "^8.17.1",

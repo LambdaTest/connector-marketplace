@@ -23,7 +23,7 @@ test('status: down beats degraded beats healthy', () => {
   assert.equal(h.listings.a.status, 'healthy');
   assert.equal(h.listings.b.status, 'degraded');
   assert.equal(h.listings.c.status, 'down');
-  assert.deepEqual(h.counts, { healthy: 1, degraded: 1, down: 1 });
+  assert.deepEqual(h.counts, { healthy: 1, degraded: 1, down: 1, hidden: 0 });
 });
 
 test('history carries forward across runs', () => {
@@ -52,4 +52,35 @@ test('PR report escapes listing text', () => {
   assert.ok(!out.includes('@everyone'));
   assert.ok(!/(^|[^\\])\|/.test(out), 'pipes are escaped so table rows stay intact');
   assert.ok(!out.includes('\n'));
+});
+
+test('a listing failing for 7 days is hidden, and comes back when healthy', () => {
+  const { withoutHidden } = require('../scripts/lib/health');
+  const day = (n) => new Date(Date.UTC(2026, 9, 1 + n)).toISOString();
+  const run1 = buildHealth([{ id: 'x', checks: [healthDown] }, { id: 'y', checks: [healthOk] }], null, day(0));
+  assert.equal(run1.listings.x.hidden, false);
+  assert.equal(run1.listings.x.hide_on, day(7));
+  assert.equal(run1.listings.y.hide_on, null);
+
+  const run6 = buildHealth([{ id: 'x', checks: [healthDown] }, { id: 'y', checks: [healthOk] }], run1, day(6));
+  assert.equal(run6.listings.x.hidden, false, 'not yet: 6 days');
+
+  const run7 = buildHealth([{ id: 'x', checks: [healthDown] }, { id: 'y', checks: [healthOk] }], run6, day(7));
+  assert.equal(run7.listings.x.hidden, true);
+  assert.equal(run7.counts.hidden, 1);
+  const catalog = withoutHidden({ count: 2, listings: [{ id: 'x' }, { id: 'y' }] }, run7);
+  assert.deepEqual(catalog.listings.map((l) => l.id), ['y']);
+  assert.equal(catalog.count, 1);
+
+  const run8 = buildHealth([{ id: 'x', checks: [healthOk] }, { id: 'y', checks: [healthOk] }], run7, day(8));
+  assert.equal(run8.listings.x.hidden, false);
+  assert.equal(run8.listings.x.down_since, null);
+});
+
+test('a broken link alone also counts toward hiding', () => {
+  const day = (n) => new Date(Date.UTC(2026, 9, 1 + n)).toISOString();
+  const run1 = buildHealth([{ id: 'z', checks: [brokenLink] }], null, day(0));
+  const run2 = buildHealth([{ id: 'z', checks: [brokenLink] }], run1, day(7));
+  assert.equal(run2.listings.z.status, 'degraded');
+  assert.equal(run2.listings.z.hidden, true);
 });

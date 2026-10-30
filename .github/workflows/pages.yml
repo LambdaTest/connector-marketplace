@@ -50,7 +50,7 @@ jobs:
       - name: Check health
         env:
           SITE_URL: ${{ steps.pages.outputs.base_url }}
-        run: node scripts/check-health.js --out dist/site/health.json --previous "$SITE_URL/health.json"
+        run: node scripts/check-health.js --out dist/site/health.json --previous "$SITE_URL/health.json" --catalog dist/site/catalog.json
 
       - name: Collect ratings
         if: vars.RATINGS_ENABLED == 'true'
@@ -70,13 +70,17 @@ jobs:
             const open = await github.paginate(github.rest.issues.listForRepo, { owner, repo, state: 'open', labels: LABEL, per_page: 100 });
             for (const l of Object.values(health.listings)) {
               const title = `[Health] ${l.id} is ${l.status === 'down' ? 'down' : 'failing checks'}`;
+              const hideNote = l.hide_on ? `If checks still fail on ${l.hide_on.slice(0, 10)}, the listing is hidden from the marketplace until they pass again.` : '';
               const issue = open.find((i) => i.title.startsWith(`[Health] ${l.id} `));
               if (l.status !== 'healthy' && l.failing_runs >= 4 && !issue) {
                 const problems = l.problems.map((p) => `- ${p.message}: ${p.url}`).join('\n');
                 await github.rest.issues.create({
                   owner, repo, title, labels: [LABEL],
-                  body: `\`${l.id}\` has failed health checks since ${l.down_since} (${l.failing_runs} runs in a row).\n\n${problems}\n\nPartner: please fix the endpoint or links, or update the listing. This issue closes itself when checks pass.`,
+                  body: `\`${l.id}\` has failed health checks since ${l.down_since} (${l.failing_runs} runs in a row).\n\n${problems}\n\nPartner: please fix the endpoint or links, or update the listing. ${hideNote} This issue closes itself when checks pass.`,
                 });
+              } else if (l.hidden && issue && !issue.labels.some((x) => x.name === 'listing-hidden')) {
+                await github.rest.issues.createComment({ owner, repo, issue_number: issue.number, body: `Still failing after ${l.failing_runs} runs, so \`${l.id}\` is now hidden from the marketplace. It comes back automatically once checks pass.` });
+                await github.rest.issues.addLabels({ owner, repo, issue_number: issue.number, labels: ['listing-hidden'] });
               } else if (l.status === 'healthy' && issue) {
                 await github.rest.issues.createComment({ owner, repo, issue_number: issue.number, body: `Healthy again as of ${l.checked_at}. Closing.` });
                 await github.rest.issues.update({ owner, repo, issue_number: issue.number, state: 'closed' });
