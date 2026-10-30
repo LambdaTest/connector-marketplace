@@ -1,0 +1,18 @@
+# Keeps the pinned action SHAs and npm packages current. Updates arrive as PRs
+# from Dependabot, so they go through the same checks and Code Owner review.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      actions:
+        patterns: ["*"]
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      npm:
+        patterns: ["*"]

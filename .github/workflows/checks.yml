@@ -22,12 +22,12 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 3
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
           fetch-depth: 0
           persist-credentials: false
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version-file: .nvmrc
           cache: npm
@@ -46,7 +46,8 @@ jobs:
       - name: Partner PR scope
         # Only fork PRs are limited to listings/ and logos/. Maintainers work from branches.
         if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork
-        run: xargs -a "$RUNNER_TEMP/changed.txt" node scripts/check-pr-scope.js
+        # One file name per line: a name with spaces stays one argument.
+        run: xargs -d '\n' -a "$RUNNER_TEMP/changed.txt" node scripts/check-pr-scope.js
 
       - name: Unit tests
         run: npm test
@@ -62,13 +63,18 @@ jobs:
           npm run check:secrets
           if [ -s "$RUNNER_TEMP/changed.txt" ]; then
             # Also scan every text file the PR touches, not just listings and logos.
-            grep -Ev '\.(png|jpe?g|gif|ico|webp)$' "$RUNNER_TEMP/changed.txt" | xargs -r node scripts/scan-secrets.js
+            grep -Ev '\.(png|jpe?g|gif|ico|webp)$' "$RUNNER_TEMP/changed.txt" | xargs -r -d '\n' node scripts/scan-secrets.js
           fi
 
       - name: Build catalog
         run: npm run build
 
-      - uses: actions/upload-artifact@v4
+      - name: Build site
+        # The marketplace page, one page per connector and the guides: a template error
+        # fails here, on the PR, instead of on the deploy after merge.
+        run: npm run build:site
+
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: catalog
           path: dist/catalog.json
@@ -79,12 +85,12 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
           fetch-depth: 0
           persist-credentials: false
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version-file: .nvmrc
           cache: npm
@@ -97,9 +103,9 @@ jobs:
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
         run: |
           if [ "$EVENT" = "pull_request" ]; then
-            files=$(git diff --name-only --diff-filter=ACMR "$BASE_SHA"...HEAD -- 'listings/*.yaml')
-            if [ -z "$files" ]; then echo "No listings changed"; exit 0; fi
-            node scripts/check-links.js $files
+            mapfile -t files < <(git diff --name-only --diff-filter=ACMR "$BASE_SHA"...HEAD -- 'listings/*.yaml')
+            if [ "${#files[@]}" -eq 0 ]; then echo "No listings changed"; exit 0; fi
+            node scripts/check-links.js "${files[@]}"
           else
             npm run check:links
           fi
@@ -112,12 +118,12 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
           fetch-depth: 0
           persist-credentials: false
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version-file: .nvmrc
           cache: npm
@@ -136,7 +142,7 @@ jobs:
           if [ "$IS_FORK" = "true" ]; then set -- "$@" --fork; fi
           node scripts/pr-report.js "$@" >> "$GITHUB_STEP_SUMMARY"
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: pr-report
           path: pr-report/
