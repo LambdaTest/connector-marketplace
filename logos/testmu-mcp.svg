@@ -1,4 +1,14 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128" role="img" aria-label="testmu-mcp">
-  <rect width="128" height="128" rx="24" fill="#0EBAC5"/>
-  <text x="64" y="78" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="44" font-weight="700" fill="#fff">TM</text>
+  <rect width="128" height="128" rx="28" fill="#0E8A96"/>
+  <svg x="28" y="28" width="72" height="72" viewBox="0 0 24 24" fill="none">
+<g clip-path="url(#clip0_3660_34082)">
+<path d="M11.875 5.125V1.125H7.875M1.875 11.125H3.875M21.75 10.125H19.875V9.125V7.125C19.875 6.02043 18.9796 5.125 17.875 5.125H5.875C4.77043 5.125 3.875 6.02043 3.875 7.125V15.125C3.875 16.2296 4.77043 17.125 5.875 17.125H11.875M14.875 10.125V12.125M8.875 10.125V12.125" stroke="#FFFFFF" style="stroke:#FFFFFF;stroke-opacity:1;" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M15.311 17.626C14.8963 17.5527 14.8963 16.9473 15.311 16.874C16.8133 16.6082 18.0081 15.4447 18.3342 13.9301L18.3591 13.814C18.4489 13.3972 19.0324 13.3946 19.1257 13.8105L19.156 13.9458C19.4942 15.4534 20.6893 16.6071 22.1874 16.8721C22.6042 16.9458 22.6042 17.5542 22.1874 17.6279C20.6893 17.8929 19.4942 19.0466 19.156 20.5542L19.1257 20.6895C19.0324 21.1054 18.4489 21.1028 18.3591 20.686L18.3342 20.5699C18.0081 19.0553 16.8133 17.8918 15.311 17.626Z" stroke="#FFFFFF" style="stroke:#FFFFFF;stroke-opacity:1;" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<clipPath id="clip0_3660_34082">
+<rect width="24" height="24" fill="#0E8A96" style="fill:#0E8A96;fill-opacity:1;"/>
+</clipPath>
+</defs>
+</svg>
 </svg>

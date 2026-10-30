@@ -1,4 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128" role="img" aria-label="hyperexecute-cli">
-  <rect width="128" height="128" rx="24" fill="#1F6FEB"/>
-  <text x="64" y="78" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="44" font-weight="700" fill="#fff">HE</text>
+  <rect width="128" height="128" rx="28" fill="#1F6FEB"/>
+  <svg x="28" y="28" width="72" height="72" viewBox="0 0 21 21" fill="none">
+<rect x="0.7" y="0.7" width="19.2437" height="19.2437" rx="3.1707" stroke="#FFFFFF" style="stroke:#FFFFFF;stroke-opacity:1;" stroke-width="1.4"/>
+<path d="M10.7746 8.61379L12.0153 5.66814C12.37 4.97504 11.484 4.62855 11.1293 4.97504L6.69946 9.13364C6.34472 9.48024 6.34472 9.82674 6.87596 9.99999L9.35737 11.3863L8.11666 14.3319C7.94016 15.025 8.6479 15.3715 9.00264 15.025L13.4325 10.8664C13.609 10.6931 13.609 10.1733 13.256 9.99999L10.7746 8.61379Z" stroke="#FFFFFF" style="stroke:#FFFFFF;stroke-opacity:1;" stroke-width="1.61279" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
 </svg>
