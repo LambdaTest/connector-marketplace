@@ -13,7 +13,7 @@
   --sdlc: #3B5BDB; --sdlc-soft: #E8ECFB; --stlc: #0B7F87; --stlc-soft: #DDF2F3;
   --verified: #1A7F45; --verified-soft: #E1F3E8; --official: #6B3FD1; --official-soft: #EEE7FC;
   --star: #B7791F; --warn: #9A5B00; --warn-soft: #FBEED5; --down: #B42318; --down-soft: #FDE4E1;
-  --code-bg: #121212; --code-fg: #F5F4F0;
+  --code-bg: #FFFFFF; --code-fg: #121212; --code-line: #E7E6DF;   /* light code boxes on the warm page */
   --shadow: 0 1px 2px rgba(18,18,18,.05), 0 8px 24px rgba(18,18,18,.06);
   --radius: 10px; --radius-sm: 6px;
   --f-display: "Geist", "Helvetica Neue", Arial, sans-serif;
@@ -68,10 +68,11 @@ a:hover { color: var(--accent); text-decoration-color: currentColor; }
 .tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--line); margin-bottom: 10px; flex-wrap: wrap; }
 .tab { background: none; border: 0; border-bottom: 2px solid transparent; padding: 8px 10px; font: 600 13px var(--f-body); color: var(--muted); cursor: pointer; }
 .tab[aria-selected="true"] { color: var(--fg); border-color: var(--accent); }
-.code { position: relative; background: var(--code-bg); color: var(--code-fg); border-radius: var(--radius); padding: 14px; }
+.code { position: relative; background: var(--code-bg); color: var(--code-fg); border: 1px solid var(--code-line); border-radius: var(--radius); padding: 14px; }
 /* Long commands wrap so no text runs under the Copy button; pre-wrap keeps JSON indentation. */
 .code pre { margin: 0; font: 12.5px/1.6 var(--f-mono); white-space: pre-wrap; overflow-wrap: anywhere; padding-right: 64px; }
-.copy { position: absolute; top: 8px; right: 8px; font: 600 12px var(--f-body); background: rgba(255,255,255,.1); color: var(--code-fg); border: 1px solid rgba(255,255,255,.18); border-radius: 6px; padding: 5px 9px; cursor: pointer; }
+.copy { position: absolute; top: 8px; right: 8px; font: 600 12px var(--f-body); background: var(--sunken); color: var(--fg); border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 5px 9px; cursor: pointer; }
+.copy:hover { border-color: var(--line-strong); }
 .env { display: grid; gap: 6px; font-size: 14px; }
 .env code, .kv code { font: 12.5px var(--f-mono); background: var(--sunken); padding: 2px 6px; border-radius: 5px; }
 .dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; flex: none; }

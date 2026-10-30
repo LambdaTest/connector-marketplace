@@ -65,7 +65,7 @@ article h2 { font: 600 22px/1.25 var(--f-display); letter-spacing: -.02em; margi
 article h3 { font: 600 17px var(--f-display); letter-spacing: -.01em; margin: 22px 0 6px; scroll-margin-top: 12px; }
 article p, article li { max-width: 75ch; }
 article code { font: 12.5px var(--f-mono); background: var(--sunken); padding: 1px 5px; border-radius: 5px; overflow-wrap: anywhere; }
-article pre { background: var(--code-bg); color: var(--code-fg); border-radius: var(--radius); padding: 14px; overflow-x: auto; }
+article pre { background: var(--code-bg); color: var(--code-fg); border: 1px solid var(--code-line); border-radius: var(--radius); padding: 14px; overflow-x: auto; }
 article pre code { background: none; padding: 0; color: inherit; overflow-wrap: normal; }
 article table { border-collapse: collapse; width: 100%; font-size: 13.5px; display: block; overflow-x: auto; }
 article th, article td { text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
