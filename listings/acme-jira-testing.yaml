@@ -1,0 +1,42 @@
+
+
+id: acme-jira-testing
+name: Test Hub for Jira
+summary: Plan, run and track tests on our platform without leaving Jira.
+vendor:
+  name: Acme Apps
+  url: https://www.atlassian.com
+  github: acme-apps
+products:
+  - test-manager
+  - kaneai
+  - hyperexecute
+integration:
+  platform: Jira
+  summary: Links Jira issues to Test Manager test cases, generates tests from stories with KaneAI, runs them on HyperExecute and files failures back as Jira bugs.
+  docs_url: https://www.testmuai.com/support/docs/jira-integration/
+  capabilities:
+    - Generate test cases from a Jira story with KaneAI
+    - Link Test Manager test cases to Jira issues
+    - Run a test suite on HyperExecute from a Jira issue
+    - Create Jira bugs from failed tests, with logs and video
+    - Show the latest test results on the Jira issue
+type: plugin
+stages:
+  - requirements
+  - test-planning
+  - test-design
+  - test-execution
+  - defect-triage
+protocols:
+  - rest
+  - webhook
+install:
+  url: https://marketplace.atlassian.com/apps/0000000/test-hub-for-jira
+  auth: oauth
+docs_url: https://www.testmuai.com/support/docs/
+privacy_url: https://www.testmuai.com/legal/privacy/
+support:
+  email: support@acme-apps.example
+logo: logos/acme-jira-testing.svg
+badge: community
