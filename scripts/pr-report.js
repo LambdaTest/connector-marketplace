@@ -107,7 +107,9 @@ async function main() {
     const productErrs = errs.filter((e) => /^(products|integration)/.test(e.message));
     // e.g. a remote listing claiming a badge that needs health_url without one: report it on the Health row.
     const healthErrs = errs.filter((e) => e.message.startsWith('health_url'));
-    const otherErrs = errs.filter((e) => !productErrs.includes(e) && !healthErrs.includes(e));
+    // A missing or misnamed logo file: report it on the Logo row.
+    const logoErrs = errs.filter((e) => /^(vendor\.)?logo:/.test(e.message));
+    const otherErrs = errs.filter((e) => !productErrs.includes(e) && !healthErrs.includes(e) && !logoErrs.includes(e));
     const links = listing && typeof listing === 'object' ? (await checkListing(listing, taxonomy)).checks : [];
     const linkFails = links.filter((c) => c.kind === 'link' && c.outcome === 'fail');
     const linkWarns = links.filter((c) => c.outcome === 'warn');
@@ -120,7 +122,7 @@ async function main() {
     const checks = [
       ['Schema and categories', otherErrs.length === 0, otherErrs.length ? `${otherErrs.length} problem(s), see below` : ''],
       ['Works with our products', productErrs.length === 0, productErrs.length ? 'needs `products` and `integration`' : `${(listing?.products || []).length} product(s)`],
-      ['Logo', thisLogo.length === 0 && !errs.some((e) => /^(vendor\.)?logo:/.test(e.message)), thisLogo.join('; ')],
+      ['Logo', thisLogo.length === 0 && logoErrs.length === 0, md([...logoErrs.map((e) => e.message), ...thisLogo].join('; '))],
       ['No secrets', fileSecrets.length === 0, fileSecrets.map((s) => `line ${s.line}: ${s.rule}`).join('; ')],
       ['Links', linkFails.length === 0, linkFails.length ? linkFails.map((c) => md(describeCheck(c))).join('; ') : `${links.filter((c) => c.kind === 'link').length} checked${linkWarns.length ? `, ${linkWarns.length} to check by hand` : ''}`],
       [
