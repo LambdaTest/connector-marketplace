@@ -1,0 +1,18 @@
+id: broken-listing
+name: Acme Test Runner
+vendor:
+  name: Acme
+  url: http://acme.example
+type: mcp
+stages:
+  - testing
+  - development
+protocols:
+  - stdio
+install:
+  url: https://acme.example/mcp
+docs: https://acme.example/docs
+privacy_url: https://acme.example/privacy
+support: {}
+logo: logos/acme.svg
+badge: verified
