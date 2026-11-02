@@ -2,7 +2,7 @@
 
 Anyone who builds a connector for our products can list it in the marketplace. The whole process is one pull request (PR) on this repo: you add a short YAML file and a logo, automated checks review it in minutes, and a maintainer approves it.
 
-This is step 2. Haven't built your connector yet? Start with [step 1: Build your connector](docs/building-a-connector.md): our REST APIs, MCP server, grid, webhooks and how to authenticate.
+This is step 2. Haven't built your connector yet? Start with [step 1: Build your connector](docs/building-a-connector.md): Kane CLI and Rook, agent-to-agent testing, Browser Cloud, our APIs and how to authenticate.
 
 ## What we accept
 
