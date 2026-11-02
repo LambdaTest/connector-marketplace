@@ -15,7 +15,7 @@ schema/listing.schema.json   structure of a listing (category values are filled 
 VERIFIED.md                  listings maintainers have tested; the only way to get a verified/official badge
 scripts/                     validate, build-catalog, check-logos, scan-secrets, check-links, check-pr-scope
 examples/                    fictional partner listings to copy (validated, never published)
-docs/building-a-connector.md how a connector talks to our platform: REST APIs, MCP server, grid, webhooks, auth
+docs/building-a-connector.md how a connector talks to our platform: Kane CLI, Rook, agent testing, Browser Cloud, APIs, auth
 site/index.html              the marketplace page (published to GitHub Pages)
 site/assets/base.css         shared styles for connector pages and guides
 tests/                       unit tests and broken fixtures
