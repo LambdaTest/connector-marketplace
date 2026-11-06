@@ -29,3 +29,4 @@ Open an issue that links your merged listing and says it is ready for verificati
 | `hyperexecute-cli` | _pending_ | _pending_ | First-party |
 | `testmu-tunnel` | _pending_ | _pending_ | First-party |
 | `testmu-jenkins` | _pending_ | _pending_ | First-party |
+| `rook-cli` | _pending_ | _pending_ | First-party |
