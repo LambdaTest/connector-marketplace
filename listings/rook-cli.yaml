@@ -19,6 +19,7 @@ integration:
     - Gate CI jobs on the JSON results of a run
 type: cli
 stages:
+  - requirements
   - test-design
   - test-execution
   - test-reporting
