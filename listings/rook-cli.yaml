@@ -40,5 +40,5 @@ docs_url: https://www.testmuai.com/support/docs/agent-assurance-overview/
 privacy_url: https://www.testmuai.com/legal/privacy/
 support:
   url: https://github.com/LambdaTest/rook/issues
-logo: logos/rook-cli.svg
+logo: logos/rook-cli.png
 badge: official
