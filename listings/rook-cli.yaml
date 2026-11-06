@@ -1,0 +1,44 @@
+id: rook-cli
+name: Rook CLI
+summary: Test AI agents that take actions and grade each run on what the agent actually changed, not on its reply.
+vendor:
+  name: TestMu AI
+  url: https://www.testmuai.com
+  logo: logos/vendor-testmu-ai.png
+  github: LambdaTest
+products:
+  - agent-assurance
+integration:
+  summary: Discovers what your agent can do, generates scenarios, runs them against the agent over HTTP, a command or MCP, and judges each run from the evidence it collects. Results can gate a CI job.
+  docs_url: https://www.testmuai.com/support/docs/agent-assurance-overview/
+  capabilities:
+    - Discover an agent's capabilities and generate test scenarios
+    - Run multi-step scenarios against agents that call tools and change state
+    - Judge runs from collected evidence as Pass, Fail or Unable to Verify
+    - Review evidence in a local or hosted web UI
+    - Gate CI jobs on the JSON results of a run
+type: cli
+stages:
+  - test-design
+  - test-execution
+  - test-reporting
+  - build
+protocols:
+  - rest
+install:
+  command: npm install -g @testmuai/rook@0.1.17
+  auth: api-key
+  env:
+    - name: LT_USERNAME
+      description: Your account username, for unattended sign-in in CI. Locally, sign in with /login instead.
+      required: false
+    - name: LT_ACCESS_KEY
+      description: Your access key from the account settings page, for unattended sign-in in CI.
+      required: false
+      secret: true
+docs_url: https://www.testmuai.com/support/docs/agent-assurance-overview/
+privacy_url: https://www.testmuai.com/legal/privacy/
+support:
+  url: https://github.com/LambdaTest/rook/issues
+logo: logos/rook-cli.svg
+badge: official
